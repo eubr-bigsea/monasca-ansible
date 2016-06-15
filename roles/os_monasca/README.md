@@ -103,6 +103,7 @@ Ubuntu 14.04 trusty tahr
 Author Information
 ------------------
 Flávio Ramalho
+
 flaviosr@lsd.ufcg.edu.br
 
 License
