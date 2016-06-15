@@ -1,0 +1,44 @@
+---
+- name: Update MySQL root password for all root accounts
+  mysql_user:
+    name: "root"
+    host: "{{ item }}"
+    password: "{{ mysql_root_pass }}"
+    state: present
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+  tags:
+    - monasca-install-mariadb
+
+- name: Drop MariaDB Config(s)
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "0644"
+  with_items:
+    - src: "mysql/my.cnf.j2"
+      dest: "/etc/mysql/my.cnf"
+      owner: "root"
+      group: "root"
+    - src: "mysql/root.cnf.j2"
+      dest: "/root/.my.cnf"
+      owner: "root"
+      group: "root"
+  register: mariadb_config
+  tags:
+    - mariadb-config
+    - monasca-install-mariadb
+
+- name: Restart mariadb
+  service:
+    name: "mysql"
+    state: "restarted"
+  when: mariadb_config.changed
+  tags:
+    - mariadb-restart
+    - monasca-install-mariadb

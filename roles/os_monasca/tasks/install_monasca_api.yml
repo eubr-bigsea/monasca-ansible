@@ -1,0 +1,81 @@
+---
+- name: Install monasca-api required pip packages (venv)
+  pip:
+    name: "{{ item }}"
+    virtualenv: "/opt/venvs/monasca-api"
+  with_items:
+    - "gunicorn"
+    - "PyMySQL"
+  tags:
+    - monasca-api-pip-packages
+    - monasca-install-api
+
+- name: Create monasca-api tarball
+  command: "/opt/venvs/monasca-api/bin/python setup.py sdist"
+  args:
+    chdir: "/opt/cloned-repos/monasca-api"
+  tags:
+    - monasca-api-tarball
+    - monasca-install-api
+
+- name: Get tarball file name
+  shell: "ls -td /opt/cloned-repos/monasca-api/dist/monasca-api-*.tar.gz | head -1"
+  register: tarball
+  tags:
+    - monasca-api-install
+    - monasca-install-api
+
+- name: Install monasca-api
+  pip:
+    name: "file://{{ tarball.stdout }}"
+    virtualenv: "/opt/venvs/monasca-api"
+  tags:
+    - monasca-api-install
+    - monasca-install-api
+
+- name: Drop monasca-api Config(s)
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - src: "monasca-api/monasca-api-init.conf.j2"
+      dest: "/etc/init/monasca-api.conf"
+      owner: "root"
+      group: "root"
+      mode: "0744"
+    - src: "monasca-api/api-config.conf.j2"
+      dest: "/etc/monasca/api-config.conf"
+      owner: "mon-api"
+      group: "root"
+      mode: "0660"
+    - src: "monasca-api/api-config.ini.j2"
+      dest: "/etc/monasca/api-config.ini"
+      owner: "mon-api"
+      group: "root"
+      mode: "0660"
+  tags:
+    - monasca-api-config
+    - monasca-install-api
+
+- name: Create monasca-api symbolic links
+  file:
+    src: "/etc/monasca/{{ item }}"
+    dest: "/etc/{{ item }}"
+    state: link
+  with_items:
+    - "api-config.conf"
+    - "api-config.ini"
+  tags:
+    - monasca-api-links
+    - monasca-install-api
+
+- name: Restart monasca-api
+  service:
+    name: "monasca-api"
+    state: "restarted"
+  tags:
+    - monasca-api-restart
+    - monasca-install-api

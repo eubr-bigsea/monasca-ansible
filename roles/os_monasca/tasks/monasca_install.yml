@@ -1,0 +1,58 @@
+---
+
+- include: monasca_install_apt.yml
+  when:
+    - ansible_pkg_mgr == 'apt'
+  tags:
+    - monasca-install
+    - monasca-apt-packages
+
+- include: update_maven.yml
+  tags:
+    - monasca-update-maven
+
+- name: Set pip_install_options_fact 
+  set_fact:
+    pip_install_options_fact: "{{ pip_install_options|default('') }}"
+  tags:
+    - monasca-install
+    - monasca-pip-packages
+
+- name: Install pip required packages
+  pip:
+    name: "{{ item }}"
+    state: present 
+  register: install_packages
+  until: install_packages|success
+  retries: 5
+  delay: 2
+  with_items: monasca_required_pip_packages
+  tags:
+    - monasca-install
+    - monasca-pip-packages
+
+- name: Create the monasca virtualenv
+  command: virtualenv /opt/venvs/monasca-{{ monasca_venv_tag }}
+  args:
+    creates: /opt/venvs/monasca-{{ monasca_venv_tag }}
+  tags:
+    - monasca-install
+    - monasca-create-venv
+
+- name: Install pip packages (venv)
+  pip:
+    name: "{{ item }}"
+    state: present
+    virtualenv: "{{ monasca_venv_bin | dirname }}"
+    virtualenv_site_packages: "no"
+    extra_args: "{{ pip_install_options_fact }}"
+  register: install_packages
+  until: install_packages|success
+  retries: 5
+  delay: 2
+  with_items: monasca_pip_packages
+  when:
+    - monasca_venv_enabled | bool
+  tags:
+    - monasca-install
+    - monasca-pip-packages

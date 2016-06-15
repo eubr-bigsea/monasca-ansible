@@ -1,0 +1,52 @@
+---
+- name: Download influxdb 
+  get_url:
+    url: " http://s3.amazonaws.com/influxdb/influxdb_{{ influxdb_version }}_amd64.deb"
+    dest: "/root/influxdb_{{ influxdb_version }}_amd64.deb"
+    mode: 0440
+  tags:
+    - monasca-influxdb-download
+    - monasca-install-influxdb
+
+- name: Install influxdb
+  apt:
+    deb: "/root/influxdb_{{ influxdb_version }}_amd64.deb"
+  tags:
+    - monasca-install-influxdb
+
+- name: Drop InfluxDB Config(s)
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "0644"
+  with_items:
+    - src: "influxdb/influxdb.conf.j2"
+      dest: "/etc/influxdb/influxdb.conf"
+      owner: "root"
+      group: "root"
+    - src: "influxdb/influxdb.j2"
+      dest: "/etc/default/influxdb"
+      owner: "root"
+      group: "root"
+  register: influxdb_config
+  tags:
+    - monasca-influxdb-config
+    - monasca-install-influxdb
+
+- name: Restart influxdb
+  service:
+    name: "influxdb"
+    state: "restarted"
+  when: influxdb_config.changed
+  tags:
+    - influxdb-restart
+    - monasca-install-influxdb
+
+- name: Sleep for 60 seconds to let Influxdb elect a leader
+  pause:
+    minutes: 1
+  when: influxdb_config.changed
+  tags:
+    - monasca-install-influxdb

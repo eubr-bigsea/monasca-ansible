@@ -1,0 +1,28 @@
+## Monasca
+monasca_common_git_repo: "https://git.openstack.org/openstack/monasca-common.git"
+monasca_api_git_repo: "https://git.openstack.org/openstack/monasca-api.git"
+monasca_persister_git_repo: "https://git.openstack.org/openstack/monasca-persister.git"
+monasca_notification_git_repo: "https://git.openstack.org/openstack/monasca-notification.git"
+monasca_thresh_git_repo: "https://git.openstack.org/openstack/monasca-thresh.git"
+monasca_ui_git_repo: "https://git.openstack.org/openstack/monasca-ui.git"
+monasca_agent_git_repo: "https://git.openstack.org/openstack/monasca-agent.git"
+monasca_git_branch: "master"
+
+# Monasca notification
+notification_address: root@localhost
+notification_name: 'Default Email'
+notification_type: EMAIL
+
+## Keystone
+# admin credentials
+os_username: "admin"
+os_password: "secretadmin"
+os_project_name: "admin"
+
+# mini-mon credentials
+os_mon_username: "mini-mon"
+os_mon_password: "password"
+os_mon_project_name: "mini-mon"
+
+## Database
+mysql_root_pass: "secretdatabase"

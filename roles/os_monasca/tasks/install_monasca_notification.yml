@@ -1,0 +1,64 @@
+---
+- name: Install monasca-notification required pip packages (venv)
+  pip:
+    name: "{{ item }}"
+    virtualenv: "/opt/venvs/monasca-notification"
+  with_items:
+    - "mysql-python"
+  tags:
+    - monasca-notification-pip-packages
+    - monasca-install-notification
+
+- name: Create monasca-notification tarball
+  command: "/opt/venvs/monasca-notification/bin/python setup.py sdist"
+  args:
+    chdir: "/opt/cloned-repos/monasca-notification"
+  tags:
+    - monasca-notification-tarball
+    - monasca-install-notification
+
+- name: Get tarball file name
+  shell: "ls -td /opt/cloned-repos/monasca-notification/dist/monasca-notification-*.tar.gz | head -1"
+  register: tarball
+  tags:
+    - monasca-notification-install
+    - monasca-install-notification
+
+- name: Install monasca-notification
+  pip:
+    name: "file://{{ tarball.stdout }}"
+    virtualenv: "/opt/venvs/monasca-notification"
+    extra_args: "--allow-unverified simport"
+  tags:
+    - monasca-notification-install
+    - monasca-install-notification
+
+- name: Drop monasca-notification Config(s)
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - src: "monasca-notification/monasca-notification-init.conf.j2"
+      dest: "/etc/init/monasca-notification.conf"
+      owner: "root"
+      group: "root"
+      mode: "0744"
+    - src: "monasca-notification/notification.yaml.j2"
+      dest: "/etc/monasca/notification.yaml"
+      owner: "mon-notification"
+      group: "monasca"
+      mode: "0660"
+  tags:
+    - monasca-notification-config
+    - monasca-install-notification
+
+- name: Restart monasca-notification
+  service:
+    name: "monasca-notification"
+    state: "restarted"
+  tags:
+    - monasca-notification-restart
+    - monasca-install-notification

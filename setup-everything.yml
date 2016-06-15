@@ -1,0 +1,4 @@
+---
+
+- include: os-monasca-install.yml
+- include: os-monasca-agent-install.yml

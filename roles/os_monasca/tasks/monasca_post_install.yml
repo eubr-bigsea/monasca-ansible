@@ -1,0 +1,22 @@
+---
+- include: install_grafana.yml
+
+- name: Copy monasca keystone script
+  template: 
+    src: "create_monasca_service.py.j2"
+    dest: "/usr/local/bin/create_monasca_service.py"
+    mode: 0700
+  tags:
+    - monasca-keystone
+
+- name: Ensure monasca service, endpoint, roles and users
+  command: "/opt/venvs/monasca-client/bin/python /usr/local/bin/create_monasca_service.py" 
+  tags:
+    - monasca-keystone
+
+- name: Drop monasca openrc
+  template:
+    src: "monasca-openrc.j2"
+    dest: "/root/monasca-openrc"
+  tags:
+    - monasca-openrc

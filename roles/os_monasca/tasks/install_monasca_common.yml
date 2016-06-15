@@ -1,0 +1,7 @@
+---
+- name: Setup monasca-common
+  command: "mvn clean install -DskipTests"
+  args:
+    chdir: "/opt/cloned-repos/monasca-common"
+  tags:
+    - monasca-install-common

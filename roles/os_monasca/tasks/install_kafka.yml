@@ -1,0 +1,73 @@
+---
+
+- name: Download kafka
+  get_url:
+    url: "http://apache.mirrors.tds.net/kafka/{{ base_kafka_version }}/kafka_{{ kafka_version }}.tgz"
+    dest: "/root/kafka_{{ kafka_version }}.tgz"
+    mode: 0440
+  tags:
+    - monasca-kafka-download
+    - monasca-install-kafka
+
+- name: Unarchive kafka
+  unarchive:
+    src: "/root/kafka_{{ kafka_version }}.tgz"
+    dest: "/opt"
+    creates: "/opt/kafka_{{ kafka_version }}"
+    copy: "no"
+  tags:
+    - monasca-kafka-unarchive
+    - monasca-install-kafka
+
+- name: Create kafka symbolic links
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  with_items:
+    - src: "/opt/kafka_{{ kafka_version }}"
+      dest: "/opt/kafka"
+    - src: "/opt/kafka/config"
+      dest: "/etc/kafka"
+  tags:
+    - monasca-kafa-link
+    - monasca-install-kafka
+
+- name: Drop Kafka Config(s)
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode|default('0644') }}"
+  with_items:
+    - src: "kafka/kafka-server-start.sh.j2"
+      dest: "/opt/kafka_{{ kafka_version }}/bin/kafka-server-start.sh"
+      owner: "root"
+      group: "root"
+      mode: "0775"
+    - src: "kafka/kafka.conf.j2"
+      dest: "/etc/init/kafka.conf"
+      owner: "root"
+      group: "root"
+    - src: "kafka/log4j.properties.j2"
+      dest: "/etc/kafka/log4j.properties"
+      owner: "kafka"
+      group: "kafka"
+    - src: "kafka/server.properties.j2"
+      dest: "/etc/kafka/server.properties"
+      owner: "kafka"
+      group: "kafka"
+  register: kafka_config
+  tags:
+    - monasca-kafka-config
+    - monasca-install-kafka
+
+- name: Restart kafka
+  service:
+    name: "kafka"
+    state: "restarted"
+  when: kafka_config.changed
+  tags:
+    - kafka-restart
+    - monasca-install-kafka

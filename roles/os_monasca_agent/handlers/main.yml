@@ -1,0 +1,5 @@
+---
+- name: Restart monasca-agent
+  service:
+    name: "monasca-agent"
+    state: "restarted"

@@ -1,0 +1,10 @@
+## APT Cache options
+cache_timeout: 0 
+
+# Common apt packages
+monasca_agent_apt_packages:
+  - build-essential
+  - libxml2-dev
+  - libxslt1-dev
+  - python-dev
+  - python-yaml

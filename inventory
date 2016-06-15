@@ -1,0 +1,9 @@
+[devstack]
+10.4.1.166
+
+[monasca]
+10.4.1.170
+
+[monasca-agent:children]
+devstack
+monasca

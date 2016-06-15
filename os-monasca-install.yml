@@ -1,0 +1,23 @@
+- name: Install Monasca
+  hosts: monasca
+  user: root
+  roles:
+    - { role: "os_monasca", tags: [ "os-monasca" ] }
+  vars:
+    - keystone_ip_address: "{{ groups['devstack'][0] }}"
+
+- name: Configure standard alarm definitions
+  hosts: monasca
+  gather_facts: no
+  roles:
+    - { role: "os_monasca_alarms", tags: [ "os-monasca-alarms" ] }
+  vars:
+    - keystone_ip_address: "{{ groups['devstack'][0] }}"
+
+- name: Install monasca-ui on Horizon
+  hosts: devstack
+  user: root
+  roles:
+    - { role: "os_monasca_ui", tags: [ "os-monasca-ui" ] }
+  vars:
+    - grafana_ip_address: "{{ groups['monasca'][0] }}"

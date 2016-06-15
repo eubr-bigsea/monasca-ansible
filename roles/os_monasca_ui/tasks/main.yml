@@ -1,0 +1,71 @@
+---
+
+- name: Create dirs
+  file:
+    path: "/opt/cloned-repos"
+    state: directory
+  tags:
+    - monasca-ui-dirs
+    - monasca-install-ui
+
+- name: Install required pip packages
+  pip:
+    name: "{{ item }}"
+    state: present
+  register: install_packages
+  until: install_packages|success
+  retries: 5
+  delay: 2
+  with_items: monasca_ui_required_pip_packages
+  tags:
+    - monasca-ui-pip-packages
+    - monasca-install-ui
+
+- name: Clone monasca-ui git repository
+  git:
+    repo: "{{ monasca_ui_git_repo }}"
+    dest: "/opt/cloned-repos/monasca-ui"
+    version: "{{ monasca_git_branch }}"
+    force: "yes"
+  tags:
+    - monasca-ui-clone-repo
+    - monasca-install-ui
+
+- name: Create monasca-ui symbolic links
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  with_items:
+    - src: "/opt/cloned-repos/monasca-ui/monitoring/enabled/_50_admin_add_monitoring_panel.py"
+      dest: "/opt/stack/horizon/openstack_dashboard/local/enabled/_50_admin_add_monitoring_panel.py"
+    - src: "/opt/cloned-repos/monasca-ui/monitoring"
+      dest: "/opt/stack/horizon/monitoring"
+  tags:
+    - monasca-ui-links
+    - monasca-install-ui
+
+- name: Drop monasca-ui Config(s)
+  template:
+    src: "local_settings.py.j2"
+    dest: "/opt/cloned-repos/monasca-ui/monitoring/config/local_settings.py"
+  tags:
+    - monaca-ui-configs
+    - monasca-install-ui
+
+- name: Collect and compress static files
+  command: "python /opt/stack/horizon/{{ item }}"
+  with_items:
+    - "manage.py collectstatic --noinput"
+    - "manage.py compress --force"
+  tags:
+    - monasca-horizon-cc
+    - monasca-install-ui
+
+- name: Restart apache2
+  service:
+    name: "apache2"
+    state: "restarted"
+  tags:
+    - monasca-horizon-restart
+    - monasca-install-ui
