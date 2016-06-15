@@ -14,8 +14,39 @@ none
 Role Variables
 --------------
 
-.. literalinclude:: ../../defaults/main.yml
-   :language: yaml
+    ## Monasca
+    monasca_agent_git_repo: "https://git.openstack.org/openstack/monasca-agent.git"
+    monasca_git_branch: "master"
+    monasca_ip_address: "127.0.0.1"
+    
+    ## Keystone
+    keystone_ip_address: "127.0.0.1"
+    os_username: "admin"
+    os_password: "secretadmin"
+    os_project_name: "admin"
+    
+    ## Database
+    mysql_root_pass: "secretdatabase"
+    
+    ## System info
+    monasca_system_user_name: monasca
+    monasca_system_group_name: monasca
+    monasca_system_shell: /bin/false
+    monasca_system_comment: monasca system user
+    monasca_system_user_home: "/var/lib/{{ monasca_system_user_name }}"
+    
+    monasca_agent_required_pip_packages:
+      - virtualenv
+      - virtualenv-tools
+      - httplib2
+    
+    # Common pip packages
+    monasca_agent_pip_packages:
+      - simport
+      - psutil==3.0.1
+      - PyMySQL
+      - MySQL-python
+      - kafka-python==0.9.2
 
 Dependencies
 ------------
@@ -24,8 +55,6 @@ none
 
 Example Playbook
 ----------------
-
-.. code-block:: yaml
 
     - name: Install Monasca Agent
       hosts: monasca-agent
@@ -44,6 +73,7 @@ Ubuntu 14.04 trusty tahr
 Author Information
 ------------------
 Flávio Ramalho
+
 flaviosr@lsd.ufcg.edu.br
 
 License
