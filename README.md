@@ -43,7 +43,7 @@ cd devstack
 sudo apt-get update && sudo apt-get install git -y
 git clone https://git.lsd.ufcg.edu.br/monag/monasca-ansible.git
 cd monasca-ansible
-scripts/bootstrap-ansible.sh
+sudo scripts/bootstrap-ansible.sh
 # Add devstack and monasca IP address to the inventory file
 ansible-playbook setup-everything.yml
 ```
