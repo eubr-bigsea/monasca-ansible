@@ -16,30 +16,35 @@ Install and configure the following services:
 
 ## Deploying DevStack + Monasca:
 
-3 instances (deploy, devstack, monasca).
+2 instances (devstack, monasca).
+
+**Ports on security group:**
+
+- 22 (SSH)
+- 80 (HTTP)
+- 3000 (grafana)
+- 5000 (keystone)
+- 8070 (monasca-api)
+- 35357 (keystone-admin)
 
 **On devstack:**
 
 ```bash
-$ sudo apt-get update && sudo apt-get install git -y
-$ git clone https://git.openstack.org/openstack-dev/devstack -b stable/mitaka
-$ cd devstack
-$ # Remember to configure the local.conf
-$ ./stack
+sudo apt-get update && sudo apt-get install git -y
+git clone https://git.openstack.org/openstack-dev/devstack -b stable/mitaka
+cd devstack
+# Remember to configure the local.conf
+./stack
 ```
 
-**On deploy:**
+**On your machine:**
 
-Copy the contents of the public key file (/root/.ssh/id_rsa.pub) on the deployment host to the /root/.ssh/authorized_keys file on 
-monasca and devstack hosts.
-
-
+```bash
+sudo apt-get update && sudo apt-get install git -y
+git clone https://git.lsd.ufcg.edu.br/monag/monasca-ansible.git
+cd monasca-ansible
+scripts/bootstrap-ansible.sh
+# Add devstack and monasca IP address to the inventory file
+ansible-playbook setup-everything.yml
 ```
-# apt-get update && apt-get install git -y
-# git clone git@git.lsd.ufcg.edu.br:monag/monasca-ansible.git
-# cd monasca-ansible
-# scripts/bootstrap-ansible.sh
-## Add devstack and monasca IPs to the inventory file
-# ansible-playbook setup-everything.yml
-```
-openrc will be placed at the monasca instance.
+openrc will be placed in /root at the monasca instance.
