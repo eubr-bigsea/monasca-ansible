@@ -1,6 +1,7 @@
 - name: Install Monasca Agent
   hosts: monasca-agent
-  user: root
+  user: ubuntu
+  become: yes
   roles:
     - { role: "os_monasca_agent", tags: [ "os-monasca-agent" ] }
   vars:

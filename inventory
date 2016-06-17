@@ -1,8 +1,8 @@
 [devstack]
-10.4.1.166
+devstack_ip_here
 
 [monasca]
-10.4.1.170
+monasca_ip_here
 
 [monasca-agent:children]
 devstack
