@@ -24,6 +24,7 @@
 
 - include: monasca_pre_install.yml
 - include: configure_database.yml
+- include: configure_ntp.yml
 - include: configure_zookeeper.yml
 - include: install_kafka.yml
 - include: install_storm.yml
@@ -34,4 +35,5 @@
 - include: install_monasca_persister.yml
 - include: install_monasca_notification.yml
 - include: install_monasca_thresh.yml
+- include: install_monasca_client.yml
 - include: monasca_post_install.yml

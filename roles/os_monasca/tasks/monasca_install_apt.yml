@@ -23,7 +23,7 @@
     - monasca-nodejs
 
 - name: Run nodejs script
-  shell: "/root/nodejs-setup_4.x"
+  command: "/root/nodejs-setup_4.x"
   when: nodejs_apt.changed
   tags:
     - monasca-nodejs
@@ -46,9 +46,8 @@
 - name: Install apt packages
   apt:
     pkg: "{{ item }}"
-    state: latest
   register: install_packages
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: monasca_apt_packages
+  with_items: "{{ monasca_apt_packages }}"

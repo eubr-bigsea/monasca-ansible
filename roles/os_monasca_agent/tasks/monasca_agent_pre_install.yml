@@ -70,7 +70,7 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: monasca_agent_required_pip_packages
+  with_items: "{{ monasca_agent_required_pip_packages }}"
   tags:
     - monasca-agent-install
     - monasca-agent-pip-packages
@@ -112,17 +112,24 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: monasca_agent_pip_packages
+  with_items: "{{ monasca_agent_pip_packages }}"
   tags:
     - monasca-agent-install
     - monasca-agent-pip-packages
 
-- name: Clone monasca-agent git repository
+- name: Clone monasca git repositories
   git:
-    repo: "{{ monasca_agent_git_repo }}"
-    dest: "/opt/cloned-repos/monasca-agent"
-    version: "{{ monasca_git_branch }}"
+    repo: "{{ item.repo }}"
+    dest: "/opt/cloned-repos/{{ item.dest }}"
+    version: "{{ item.version }}"
     force: "yes"
+  with_items:
+    - repo: "{{ monasca_agent_git_repo }}"
+      dest: "monasca-agent"
+      version: "{{ monasca_git_branch }}"
+    - repo: "{{ monasca_client_git_repo }}"
+      dest: "monasca-client"
+      version: "{{ monasca_git_branch }}"
   tags:
     - monasca-agent-clone-repo
     - monasca-agent-install

@@ -22,7 +22,7 @@
     - monasca-storm-version
     - monasca-install-storm
 
-- name: Download storm 
+- name: Download storm
   get_url:
     url: "http://apache.mirrors.tds.net/storm/apache-storm-{{ storm_version }}/apache-storm-{{ storm_version }}.tar.gz"
     dest: "/root/apache-storm-{{ storm_version }}.tar.gz"
@@ -31,7 +31,7 @@
     - monasca-storm-download
     - monasca-install-storm
 
-- name: Unarchive storm 
+- name: Unarchive storm
   unarchive:
     src: "/root/apache-storm-{{ storm_version }}.tar.gz"
     dest: "/opt"

@@ -29,7 +29,7 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: monasca_ui_required_pip_packages
+  with_items: "{{ monasca_ui_required_pip_packages }}"
   tags:
     - monasca-ui-pip-packages
     - monasca-install-ui
@@ -54,6 +54,7 @@
       dest: "/opt/stack/horizon/openstack_dashboard/local/enabled/_50_admin_add_monitoring_panel.py"
     - src: "/opt/cloned-repos/monasca-ui/monitoring"
       dest: "/opt/stack/horizon/monitoring"
+  register: monasca_links
   tags:
     - monasca-ui-links
     - monasca-install-ui
@@ -71,14 +72,8 @@
   with_items:
     - "manage.py collectstatic --noinput"
     - "manage.py compress --force"
+  when: monasca_links.changed
+  notify: Restart apache2
   tags:
     - monasca-horizon-cc
-    - monasca-install-ui
-
-- name: Restart apache2
-  service:
-    name: "apache2"
-    state: "restarted"
-  tags:
-    - monasca-horizon-restart
     - monasca-install-ui

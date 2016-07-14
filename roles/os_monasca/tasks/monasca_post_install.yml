@@ -24,7 +24,8 @@
     - monasca-keystone
 
 - name: Ensure monasca service, endpoint, roles and users
-  command: "/opt/venvs/monasca-client/bin/python /usr/local/bin/create_monasca_service.py" 
+  command: "/opt/venvs/monasca-client/bin/python /usr/local/bin/create_monasca_service.py"
+  changed_when: false
   tags:
     - monasca-keystone
 

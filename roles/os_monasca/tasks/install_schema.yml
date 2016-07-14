@@ -52,7 +52,7 @@
 - name: Setup mysql schemas
   mysql_db:
     state: "import"
-    name: "{{ item.name }}" 
+    name: "{{ item.name }}"
     target: "/opt/sqls/{{ item.sql }}"
   with_items:
     - name: "mon"

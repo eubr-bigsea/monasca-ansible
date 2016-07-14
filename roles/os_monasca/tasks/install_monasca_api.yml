@@ -19,6 +19,7 @@
     virtualenv: "/opt/venvs/monasca-api"
   with_items:
     - "gunicorn"
+    - "influxdb==2.8.0"
     - "PyMySQL"
   tags:
     - monasca-api-pip-packages
@@ -28,6 +29,8 @@
   command: "/opt/venvs/monasca-api/bin/python setup.py sdist"
   args:
     chdir: "/opt/cloned-repos/monasca-api"
+  register: api_result
+  changed_when: "api_result.rc == 0"
   tags:
     - monasca-api-tarball
     - monasca-install-api
@@ -35,6 +38,7 @@
 - name: Get tarball file name
   shell: "ls -td /opt/cloned-repos/monasca-api/dist/monasca-api-*.tar.gz | head -1"
   register: tarball
+  changed_when: false
   tags:
     - monasca-api-install
     - monasca-install-api

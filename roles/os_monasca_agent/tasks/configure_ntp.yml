@@ -13,14 +13,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-## APT Cache options
-cache_timeout: 0
+- name: Drop chrony Config(s)
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "0644"
+  with_items:
+    - src: "chrony.conf.j2"
+      dest: "/etc/chrony/chrony.conf"
+      owner: "root"
+      group: "root"
+  register: chrony_config
+  tags:
+    - chrony-config
+    - monasca-install-chrony
 
-# Common apt packages
-monasca_agent_apt_packages:
-  - build-essential
-  - chrony
-  - libxml2-dev
-  - libxslt1-dev
-  - python-dev
-  - python-yaml
+- name: Restart chrony
+  service:
+    name: "chrony"
+    state: "restarted"
+  when: chrony_config.changed
+  tags:
+    - chrony-restart
+    - monasca-install-chrony

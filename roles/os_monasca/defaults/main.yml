@@ -20,6 +20,7 @@ monasca_persister_git_repo: "https://git.openstack.org/openstack/monasca-persist
 monasca_notification_git_repo: "https://git.openstack.org/openstack/monasca-notification.git"
 monasca_thresh_git_repo: "https://git.openstack.org/openstack/monasca-thresh.git"
 monasca_ui_git_repo: "https://git.openstack.org/openstack/monasca-ui.git"
+monasca_client_git_repo: "https://git.openstack.org/openstack/python-monascaclient.git"
 monasca_git_branch: "master"
 
 ## Grafana
@@ -48,6 +49,10 @@ kafka_version: "2.9.2-{{ base_kafka_version }}"
 storm_version: "1.0.1"
 storm_logback_dir: "log4j2"
 
+## NTP
+ntp_servers:
+  - ntp.lsd.ufcg.edu.br
+
 ## System info
 monasca_system_user_name: monasca
 monasca_system_group_name: monasca
@@ -64,7 +69,6 @@ monasca_required_pip_packages:
 
 # Common pip packages
 monasca_pip_packages:
-  - python-monascaclient
   - python-keystoneclient
   - keystoneauth1
   - simport

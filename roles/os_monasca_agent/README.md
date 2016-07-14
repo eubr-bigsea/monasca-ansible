@@ -16,6 +16,7 @@ Role Variables
 
     ## Monasca
     monasca_agent_git_repo: "https://git.openstack.org/openstack/monasca-agent.git"
+    monasca_client_git_repo: "https://git.openstack.org/openstack/python-monascaclient.git"
     monasca_git_branch: "master"
     monasca_ip_address: "127.0.0.1"
     
@@ -27,6 +28,10 @@ Role Variables
     
     ## Database
     mysql_root_pass: "secretdatabase"
+    
+    ## NTP
+    agent_ntp_servers:
+      - "{{ monasca_ip_address }}"
     
     ## System info
     monasca_system_user_name: monasca

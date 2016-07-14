@@ -50,7 +50,7 @@
     - monasca-install-grafana
 
 - name: Copy grafana install script
-  copy: 
+  copy:
     src: "install_grafana.sh"
     dest: "/opt/grafana-build/install_grafana.sh"
     mode: "0750"
@@ -59,7 +59,7 @@
     - monasca-grafana-script
     - monasca-install-grafana
 
-- name: Install grafana 
+- name: Install grafana
   command: "./install_grafana.sh"
   args:
     chdir: "/opt/grafana-build"

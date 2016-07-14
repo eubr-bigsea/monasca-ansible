@@ -17,5 +17,7 @@
   command: "mvn clean install -DskipTests"
   args:
     chdir: "/opt/cloned-repos/monasca-common"
+  register: common_result
+  changed_when: "common_result.rc == 0"
   tags:
     - monasca-install-common

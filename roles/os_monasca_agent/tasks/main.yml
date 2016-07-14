@@ -23,4 +23,9 @@
     - always
 
 - include: monasca_agent_pre_install.yml
+
+- include: configure_ntp.yml
+  when: "'monasca' not in group_names"
+
+- include: install_monasca_client.yml
 - include: install_monasca_agent.yml

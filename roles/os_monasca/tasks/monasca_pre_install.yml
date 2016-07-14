@@ -20,7 +20,7 @@
     system: "yes"
   with_items:
     - "{{ monasca_system_group_name }}"
-    - "kafka" 
+    - "kafka"
     - "storm"
     - "grafana"
   tags:
@@ -123,7 +123,7 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: monasca_required_pip_packages
+  with_items: "{{ monasca_required_pip_packages }}"
   tags:
     - monasca-install
     - monasca-pip-packages
@@ -167,7 +167,7 @@
     - "client"
     - "api"
     - "persister"
-    - "notification" 
+    - "notification"
   tags:
     - monasca-install
     - monasca-create-venv
@@ -181,7 +181,7 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: monasca_pip_packages
+  with_items: "{{ monasca_pip_packages }}"
   tags:
     - monasca-install
     - monasca-pip-packages
@@ -210,6 +210,9 @@
       version: "{{ monasca_git_branch }}"
     - repo: "{{ monasca_ui_git_repo }}"
       dest: "monasca-ui"
+      version: "{{ monasca_git_branch }}"
+    - repo: "{{ monasca_client_git_repo }}"
+      dest: "monasca-client"
       version: "{{ monasca_git_branch }}"
   tags:
     - monasca-clone-repos

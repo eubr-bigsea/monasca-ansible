@@ -1,3 +1,5 @@
+# {{ ansible_managed }}
+
 #
 # (C) Copyright 2015 Hewlett Packard Enterprise Development Company LP
 #
@@ -42,7 +44,7 @@ nimbus.thrift.port: 6627
 nimbus.childopts: -Xmx256m
 
 ### ui.* configs are for the master
-ui.host: {{ ansible_default_ipv4.address }} 
+ui.host: {{ ansible_default_ipv4.address }}
 ui.port: 8088
 ui.childopts: -Xmx768m
 

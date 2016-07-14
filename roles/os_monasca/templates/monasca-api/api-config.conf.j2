@@ -1,3 +1,5 @@
+# {{ ansible_managed }}
+
 [DEFAULT]
 # logging, make sure that the user under whom the server runs has permission
 # to write to the directory.
@@ -86,7 +88,7 @@ partitions = 0
 
 [influxdb]
 # The IP address of the InfluxDB service.
-ip_address = {{ ansible_default_ipv4.address }} 
+ip_address = {{ ansible_default_ipv4.address }}
 
 # The port number that the InfluxDB service is listening on.
 port = 8086
@@ -112,7 +114,7 @@ url = "mysql+pymysql://monapi:password@{{ ansible_default_ipv4.address }}/mon"
 [keystone_authtoken]
 identity_uri = http://{{ keystone_ip_address }}:35357
 auth_uri = http://{{ keystone_ip_address }}:5000
-admin_password = {{ os_password }} 
+admin_password = {{ os_password }}
 admin_user = {{ os_username }}
 admin_tenant_name = {{ os_project_name }}
 cafile =

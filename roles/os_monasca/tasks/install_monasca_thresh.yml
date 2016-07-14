@@ -17,12 +17,25 @@
   command: "mvn clean package -DskipTests"
   args:
     chdir: "/opt/cloned-repos/monasca-thresh/thresh"
+  register: thresh_result
+  changed_when: "thresh_result.rc == 0"
   tags:
     - monasca-thresh-install
+    - monasca-install-thresh
+
+- name: Get monasca thrash jar file name
+  shell: "ls -td /opt/cloned-repos/monasca-thresh/thresh/target/monasca-thresh-*-shaded.jar | head -1"
+  register: thresh_jar
+  changed_when: false
+  tags:
+    - monasca-tresh-filename
+    - monasca-install-thresh
 
 - name: Copy thresh jar
-  shell: "cp -f /opt/cloned-repos/monasca-thresh/thresh/target/monasca-thresh-*-shaded.jar \
-     /opt/monasca-thresh/monasca-thresh.jar"
+  copy:
+    src: "{{ thresh_jar.stdout }}"
+    dest: "/opt/monasca-thresh/monasca-thresh.jar"
+    remote_src: true
   tags:
     - monasca-thresh-cpjar
     - monasca-install-thresh

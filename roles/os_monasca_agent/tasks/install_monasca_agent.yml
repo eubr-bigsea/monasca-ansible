@@ -17,6 +17,8 @@
   command: "/opt/venvs/monasca-agent/bin/python setup.py sdist"
   args:
     chdir: "/opt/cloned-repos/monasca-agent"
+  register: agent_result
+  changed_when: "agent_result.rc == 0"
   tags:
     - monasca-agent-tarball
     - monasca-install-agent
@@ -24,6 +26,7 @@
 - name: Get tarball file name
   shell: "ls -td /opt/cloned-repos/monasca-agent/dist/monasca-agent-*.tar.gz | head -1"
   register: tarball
+  changed_when: false
   tags:
     - monasca-install-agent
 
@@ -58,21 +61,27 @@
     - monasca-agent-config
     - monasca-install-agent
 
-- name: Remove monasca vcenter plugin
+- name: Remove monasca plugins throwing error on stable/mitaka
   file:
-    path: "/opt/venvs/monasca-agent/local/lib/python2.7/site-packages/monasca_setup/detection/plugins/vcenter.py"
-    state: "absent"
-  tags:
-    - monasca-rm-vcenter
-    - monasca-install-agent
-
-- name: Remove monasca rabbitmq plugin
-  file:
-    path: "/opt/venvs/monasca-agent/local/lib/python2.7/site-packages/monasca_setup/detection/plugins/rabbitmq.py"
+    path: "/opt/venvs/monasca-agent/local/lib/python2.7/site-packages/monasca_setup/detection/plugins/{{ item }}.py"
     state: "absent"
   when: monasca_git_branch == "stable/mitaka"
+  with_items:
+    - rabbitmq
   tags:
-    - monasca-rm-vcenter
+    - monasca-rm-plugins
+    - monasca-install-agent
+
+- name: Remove monasca plugins throwing error on master
+  file:
+    path: "/opt/venvs/monasca-agent/local/lib/python2.7/site-packages/monasca_setup/detection/plugins/{{ item }}.py"
+    state: "absent"
+  when: monasca_git_branch == "master"
+  with_items:
+    - vcenter
+    - apache
+  tags:
+    - monasca-rm-plugins
     - monasca-install-agent
 
 - name: Drop mysql config
@@ -86,6 +95,8 @@
 
 - name: Run monasca-reconfigure
   command: "/usr/local/bin/monasca-reconfigure"
+  register: reconfigure_result
+  changed_when: "reconfigure_result.rc == 0"
   tags:
     - monasca-agent-reconfigure
     - monasca-install-agent

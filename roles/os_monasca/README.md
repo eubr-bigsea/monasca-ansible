@@ -4,6 +4,7 @@ os_monasca
 Install and configure OpenStack Monasca.
 
 The following services are installed:
+- Chrony
 - MariaDB
 - Zookeeper
 - Kafka
@@ -30,6 +31,7 @@ Role Variables
     monasca_notification_git_repo: "https://git.openstack.org/openstack/monasca-notification.git"
     monasca_thresh_git_repo: "https://git.openstack.org/openstack/monasca-thresh.git"
     monasca_ui_git_repo: "https://git.openstack.org/openstack/monasca-ui.git"
+    monasca_client_git_repo: "https://git.openstack.org/openstack/python-monascaclient.git"
     monasca_git_branch: "master"
     
     ## Grafana
@@ -58,6 +60,10 @@ Role Variables
     storm_version: "1.0.1"
     storm_logback_dir: "log4j2"
     
+    ## NTP
+    ntp_servers:
+      - ntp.lsd.ufcg.edu.br
+    
     ## System info
     monasca_system_user_name: monasca
     monasca_system_group_name: monasca
@@ -74,7 +80,6 @@ Role Variables
     
     # Common pip packages
     monasca_pip_packages:
-      - python-monascaclient
       - python-keystoneclient
       - keystoneauth1
       - simport

@@ -27,6 +27,8 @@
   command: "/opt/venvs/monasca-notification/bin/python setup.py sdist"
   args:
     chdir: "/opt/cloned-repos/monasca-notification"
+  register: notification_result
+  changed_when: "notification_result.rc == 0"
   tags:
     - monasca-notification-tarball
     - monasca-install-notification
@@ -34,6 +36,7 @@
 - name: Get tarball file name
   shell: "ls -td /opt/cloned-repos/monasca-notification/dist/monasca-notification-*.tar.gz | head -1"
   register: tarball
+  changed_when: false
   tags:
     - monasca-notification-install
     - monasca-install-notification

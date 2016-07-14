@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Download influxdb 
+- name: Download influxdb
   get_url:
     url: " http://s3.amazonaws.com/influxdb/influxdb_{{ influxdb_version }}_amd64.deb"
     dest: "/root/influxdb_{{ influxdb_version }}_amd64.deb"

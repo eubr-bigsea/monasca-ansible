@@ -17,6 +17,8 @@
   command: "/opt/venvs/monasca-persister/bin/python setup.py sdist"
   args:
     chdir: "/opt/cloned-repos/monasca-persister"
+  register: tarball_result
+  changed_when: "tarball_result.rc == 0"
   tags:
     - monasca-persister-tarball
     - monasca-install-persister
@@ -24,6 +26,7 @@
 - name: Get tarball file name
   shell: "ls -td /opt/cloned-repos/monasca-persister/dist/monasca-persister-*.tar.gz | head -1"
   register: tarball
+  changed_when: false
   tags:
     - monasca-persister-install
     - monasca-install-persister

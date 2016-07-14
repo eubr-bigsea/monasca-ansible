@@ -19,6 +19,7 @@ cache_timeout: 0
 # Common apt packages
 monasca_apt_packages:
   - build-essential
+  - chrony
   - git
   - libmysqlclient-dev
   - mailutils
@@ -26,7 +27,6 @@ monasca_apt_packages:
   - mariadb-client
   - maven
   - nodejs
-  - ntp
   - openjdk-7-jdk
   - python-dev
   - python-mysqldb
