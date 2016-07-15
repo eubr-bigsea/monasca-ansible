@@ -20,6 +20,8 @@ cache_timeout: 0
 monasca_agent_apt_packages:
   - build-essential
   - chrony
+  - git
+  - libmysqlclient-dev
   - libxml2-dev
   - libxslt1-dev
   - python-dev
