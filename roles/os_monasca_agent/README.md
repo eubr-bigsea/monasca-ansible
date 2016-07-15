@@ -28,6 +28,7 @@ Role Variables
     
     ## Database
     mysql_root_pass: "secretdatabase"
+    mysql_host: "127.0.0.1"
     
     ## NTP
     agent_ntp_servers:

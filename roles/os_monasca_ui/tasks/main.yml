@@ -51,9 +51,9 @@
     state: link
   with_items:
     - src: "/opt/cloned-repos/monasca-ui/monitoring/enabled/_50_admin_add_monitoring_panel.py"
-      dest: "/opt/stack/horizon/openstack_dashboard/local/enabled/_50_admin_add_monitoring_panel.py"
+      dest: "{{ horizon_dir }}/openstack_dashboard/local/enabled/_50_admin_add_monitoring_panel.py"
     - src: "/opt/cloned-repos/monasca-ui/monitoring"
-      dest: "/opt/stack/horizon/monitoring"
+      dest: "{{ horizon_dir }}/monitoring"
   register: monasca_links
   tags:
     - monasca-ui-links
@@ -68,7 +68,7 @@
     - monasca-install-ui
 
 - name: Collect and compress static files
-  command: "python /opt/stack/horizon/{{ item }}"
+  command: "{{ horizon_dir }}/{{ item }}"
   with_items:
     - "manage.py collectstatic --noinput"
     - "manage.py compress --force"

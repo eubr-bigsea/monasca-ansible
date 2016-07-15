@@ -14,8 +14,12 @@ Role Variables
     ## Monasca
     monasca_ui_git_repo: "https://git.openstack.org/openstack/monasca-ui.git"
     monasca_git_branch: "master"
-    
-    ## Grafana
+   
+    ## Horizon
+    # dashboard directory
+    horizon_dir: "/opt/stack/horizon/openstack_dashboard"
+   
+     ## Grafana
     grafana_ip_address: "127.0.0.1"
     
     ## System

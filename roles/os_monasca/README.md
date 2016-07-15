@@ -42,9 +42,19 @@ Role Variables
     
     ## Keystone
     keystone_ip_address: "127.0.0.1"
+    # admin credentials
     os_username: "admin"
     os_password: "secretadmin"
     os_project_name: "admin"
+    
+    # monasca-user credentials
+    os_mon_username: "mini-mon"
+    os_mon_password: "password"
+    os_mon_project_name: "mini-mon"
+    
+    # monasca-agent credentials
+    os_mon_agent_username: "monasca-agent"
+    os_mon_agent_password: "password"
     
     ## Database
     mysql_root_pass: "secretdatabase"

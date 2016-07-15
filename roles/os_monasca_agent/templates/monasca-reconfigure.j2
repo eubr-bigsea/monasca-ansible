@@ -1,10 +1,10 @@
 #!/bin/sh
 '/opt/venvs/monasca-agent/bin/monasca-setup' \
-    -u 'monasca-agent' \
-    -p 'password' \
+    -u '{{ os_mon_agent_username }}' \
+    -p '{{ os_mon_agent_password }}' \
      -s 'monitoring'  \
     --keystone_url 'http://{{ keystone_ip_address }}:35357/v3' \
-    --project_name 'mini-mon' \
+    --project_name '{{ os_mon_project_name }}' \
      --monasca_url 'http://{{ monasca_ip_address }}:8070/v2.0'  \
      \
      --check_frequency '15'  \

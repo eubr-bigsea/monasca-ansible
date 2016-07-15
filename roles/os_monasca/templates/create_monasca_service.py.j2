@@ -146,26 +146,22 @@ def main(argv):
     """ Get credentials to create a keystoneauth Session to instantiate a
      Keystone Client and then call methods to add users, projects and roles"""
     users = [
-        {'username': 'mini-mon',
-         'project': 'mini-mon',
-         'password': 'password',
+        {'username': '{{ os_mon_username }}',
+         'project': '{{ os_mon_project_name }}',
+         'password': '{{ os_mon_password }}',
          'role': 'monasca-user'},
-        {'username': 'monasca-agent',
-         'project': 'mini-mon',
-         'password': 'password',
+        {'username': '{{ os_mon_agent_username }}',
+         'project': '{{ os_mon_project_name }}',
+         'password': '{{ os_mon_agent_password }}',
          'role': 'monasca-agent'},
-        {'username': 'mini-mon',
-         'project': 'mini-mon',
-         'password': 'password',
+        {'username': '{{ os_mon_username }}',
+         'project': '{{ os_mon_project_name }}',
+         'password': '{{ os_mon_password }}',
          'role': 'admin'},
-        {'username': 'admin',
-         'project': 'admin',
-         'password': 'secretadmin',
+        {'username': '{{ os_username }}',
+         'project': '{{ os_project_name }}',
+         'password': '{{ os_password }}',
          'role': 'monasca-user'},
-        {'username': 'demo',
-         'project': 'demo',
-         'password': 'secretadmin',
-         'role': 'monasca-user'}
     ]
 
     url = 'http://{{ keystone_ip_address }}:35357/v3'

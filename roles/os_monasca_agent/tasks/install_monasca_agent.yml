@@ -61,29 +61,6 @@
     - monasca-agent-config
     - monasca-install-agent
 
-- name: Remove monasca plugins throwing error on stable/mitaka
-  file:
-    path: "/opt/venvs/monasca-agent/local/lib/python2.7/site-packages/monasca_setup/detection/plugins/{{ item }}.py"
-    state: "absent"
-  when: monasca_git_branch == "stable/mitaka"
-  with_items:
-    - rabbitmq
-  tags:
-    - monasca-rm-plugins
-    - monasca-install-agent
-
-- name: Remove monasca plugins throwing error on master
-  file:
-    path: "/opt/venvs/monasca-agent/local/lib/python2.7/site-packages/monasca_setup/detection/plugins/{{ item }}.py"
-    state: "absent"
-  when: monasca_git_branch == "master"
-  with_items:
-    - vcenter
-    - apache
-  tags:
-    - monasca-rm-plugins
-    - monasca-install-agent
-
 - name: Drop mysql config
   template:
     src: "my.cnf.j2"
@@ -97,6 +74,9 @@
   command: "/usr/local/bin/monasca-reconfigure"
   register: reconfigure_result
   changed_when: "reconfigure_result.rc == 0"
+  ignore_errors: true
+  notify:
+    - Restart monasca-agent
   tags:
     - monasca-agent-reconfigure
     - monasca-install-agent

@@ -20,10 +20,18 @@ os_username: "admin"
 os_password: "secretadmin"
 os_project_name: "admin"
 
-# mini-mon credentials
+# monasca-user credentials
 os_mon_username: "mini-mon"
 os_mon_password: "password"
 os_mon_project_name: "mini-mon"
+
+# monasca-agent credentials
+os_mon_agent_username: "monasca-agent"
+os_mon_agent_password: "password"
+
+## Horizon
+# dashboard directory
+horizon_dir: "/opt/stack/horizon"
 
 ## Database
 mysql_root_pass: "secretdatabase"

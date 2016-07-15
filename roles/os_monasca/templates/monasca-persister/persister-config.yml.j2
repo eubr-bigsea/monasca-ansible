@@ -26,7 +26,7 @@ alarmHistoryConfiguration:
 # See http://kafka.apache.org/documentation.html#api for semantics and defaults.
   topic: alarm-state-transitions
   groupId: 1_alarm-state-transitions
-  consumerId: "mini-mon"
+  consumerId: "{{ os_mon_username }}"
   clientId : 1
 
 metricConfiguration:
@@ -36,7 +36,7 @@ metricConfiguration:
 # See http://kafka.apache.org/documentation.html#api for semantics and defaults.
   topic: metrics
   groupId: 1_metrics
-  consumerId: "mini-mon"
+  consumerId: "{{ os_mon_username }}"
   clientId : 1
 
 #Kafka settings.
