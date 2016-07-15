@@ -93,6 +93,15 @@
     - monasca-agent-install
     - monasca-agent-create-venv
 
+- name: Upgrade pip (venv)
+  pip:
+    name: "pip"
+    state: latest
+    virtualenv: "/opt/venvs/monasca-agent"
+  tags:
+    - monasca-agent-install
+    - monasca-agent-upgrade-pip
+
 - name: Ensure monasca group on venv
   file:
     dest: "/opt/venvs/monasca-agent"
