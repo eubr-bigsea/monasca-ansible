@@ -1,0 +1,39 @@
+- hosts: devstack
+  user: vagrant
+  vars:
+    - devstack_branch: "stable/mitaka"
+
+  pre_tasks:
+    - name: apt-get update
+      become: yes
+      apt: update_cache=yes
+      ignore_errors: true
+      tags:
+        - git-install
+    - name: Install git
+      become: yes
+      apt: name=git
+      tags:
+        - git-install
+
+  tasks:
+    - name: Clone devstack branch "{{devstack_branch}}"
+      git:
+        repo: https://git.openstack.org/openstack-dev/devstack
+        version: "{{devstack_branch}}"
+        dest: /home/vagrant/devstack
+        depth: 1
+      register: git-clone
+      when: git-clone|false
+      tags:
+        - git-clone
+
+    - name: Copy devstack local.conf
+      copy: src=local.conf dest=/home/vagrant/devstack/
+      tags:
+        - devstack
+    - name: Install Stack devstack
+      command: ./stack.sh chdir=/home/vagrant/devstack
+      tags:
+        - devstack
+    - include: os-monasca-install.yml
