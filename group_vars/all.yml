@@ -38,6 +38,6 @@ mysql_root_pass: "secretdatabase"
 
 ## NTP
 ntp_servers:
-  - ntp.lsd.ufcg.edu.br
+  - pool.ntp.br
 agent_ntp_servers:
-    - "{{ monasca_ip_address }}"
+  - "{{ monasca_ip_address }}"
