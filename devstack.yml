@@ -23,8 +23,7 @@
         version: "{{devstack_branch}}"
         dest: /home/vagrant/devstack
         depth: 1
-      register: git-clone
-      when: git-clone|false
+        update: no
       tags:
         - git-clone
 
@@ -32,8 +31,17 @@
       copy: src=local.conf dest=/home/vagrant/devstack/
       tags:
         - devstack
+
+    - name: Is devstack running?
+      shell: type -p screen > /dev/null && screen -ls | egrep -q "[0-9]\.stack"
+      args:
+        chdir: /home/vagrant/devstack
+      register: is_devstack_running
+      ignore_errors: true
+      tags:
+        - devstack
     - name: Install Stack devstack
       command: ./stack.sh chdir=/home/vagrant/devstack
       tags:
         - devstack
-    - include: os-monasca-install.yml
+      when: is_devstack_running.rc == 1
