@@ -8,6 +8,8 @@ $ansible_groups = {
 }
 $ansible_raw_arguments = ['-T 30', '-e pipelining=True']
 
+$apt_proxy = "echo 'Acquire::http { Proxy \"http://roadrash:3142\"; }; Acquire::https::Proxy \"false\";' > /etc/apt/apt.conf.d/01proxy"
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   if Vagrant.has_plugin?("vagrant-cachier")
@@ -24,7 +26,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.cpus = 4
     end
 
-    ds.vm.provision "shell", inline: "echo 'Acquire::http { Proxy \"http://roadrash:3142\"; };' > /etc/apt/apt.conf.d/01proxy"
+    ds.vm.provision "shell", inline: $apt_proxy
 
     ds.vm.provision "devstack", type: "ansible" do |ansible|
       ansible.playbook = "devstack.yml"
@@ -47,7 +49,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.cpus = 4
     end
 
-    mm.vm.provision "shell", inline: "echo 'Acquire::http { Proxy \"http://roadrash:3142\"; };' > /etc/apt/apt.conf.d/01proxy"
+    mm.vm.provision "shell", inline: $apt_proxy
     mm.vm.provision "monasca", type: "ansible" do |ansible|
       ansible.playbook = "setup-everything.yml"
       ansible.raw_arguments = $ansible_raw_arguments
