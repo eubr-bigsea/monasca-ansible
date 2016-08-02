@@ -1,5 +1,4 @@
 - hosts: devstack
-  user: vagrant
   vars:
     - devstack_branch: "stable/mitaka"
 
@@ -21,27 +20,28 @@
       git:
         repo: https://git.openstack.org/openstack-dev/devstack
         version: "{{devstack_branch}}"
-        dest: /home/vagrant/devstack
+        dest: "/home/{{ansible_user}}/devstack"
         depth: 1
         update: no
       tags:
         - git-clone
 
     - name: Copy devstack local.conf
-      copy: src=local.conf dest=/home/vagrant/devstack/
+      copy: src=local.conf dest=/home/{{ansible_user}}/devstack/
       tags:
         - devstack
 
     - name: Is devstack running?
-      shell: type -p screen > /dev/null && screen -ls | egrep -q "[0-9]\.stack"
+      shell: screen -ls | egrep -q "\.stack"
       args:
-        chdir: /home/vagrant/devstack
+        chdir: "/home/{{ansible_user}}/devstack"
       register: is_devstack_running
       ignore_errors: true
       tags:
         - devstack
+
     - name: Install Stack devstack
-      command: ./stack.sh chdir=/home/vagrant/devstack
+      command: "./stack.sh chdir=/home/{{ansible_user}}/devstack"
       tags:
         - devstack
-      when: is_devstack_running.rc == 1
+      when: is_devstack_running.rc > 0
