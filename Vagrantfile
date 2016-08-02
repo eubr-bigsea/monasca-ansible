@@ -1,11 +1,13 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 VAGRANTFILE_API_VERSION = "2" # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+
 $ansible_groups = {
 	"devstack"               => ["devstack"],
 	"monasca"                => ["monasca"],
 	"monasca-agent:children" => ["devstack", "monasca"],
 }
+
 $ansible_raw_arguments = ['-T 30', '-e pipelining=True']
 
 $apt_proxy = "echo 'Acquire::http { Proxy \"http://roadrash:3142\"; }; Acquire::https::Proxy \"false\";' > /etc/apt/apt.conf.d/01proxy"
@@ -21,6 +23,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ds.vm.hostname = "devstack"
     ds.vm.box = "ubuntu/trusty64"
 
+    ds.vm.network "forwarded_port", guest: 80, host: 8080
     ds.vm.provider "virtualbox" do |vb|
       vb.memory = 7168
       vb.cpus = 4
@@ -33,9 +36,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     ds.vm.provision "monasca", type: "ansible" do |ansible|
-      ansible.playbook = "os-monasca-install.yml"
       ansible.raw_arguments = $ansible_raw_arguments
       ansible.groups =  $ansible_groups
+      ansible.playbook = "os-monasca-install.yml"
     end
   end
 
