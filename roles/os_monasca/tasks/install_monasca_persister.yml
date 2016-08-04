@@ -66,6 +66,17 @@
     - monasca-persister-config
     - monasca-install-persister
 
+- name: Install influxdb required pip packages (venv)
+  pip:
+    name: "{{ item }}"
+    virtualenv: "/opt/venvs/monasca-persister"
+  with_items:
+    - "influxdb"
+  tags:
+    - monasca-persister-pip-packages
+    - monasca-install-persister
+
+
 - name: Restart monasca-persister
   service:
     name: "monasca-persister"
