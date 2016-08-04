@@ -61,6 +61,16 @@
     - monasca-agent-config
     - monasca-install-agent
 
+- name: Drop apache config
+  template:
+    src: "apache.cnf.j2"
+    dest: "/root/.apache.cnf"
+  when: "inventory_hostname in groups['devstack']"
+  tags:
+    - monasca-apache-plugin
+    - monasca-install-agent
+
+
 - name: Drop mysql config
   template:
     src: "my.cnf.j2"
