@@ -1,8 +1,8 @@
 [devstack]
-devstack_ip_here
+devstack_ip_here  ansible_user=ubuntu
 
 [monasca]
-monasca_ip_here
+monasca_ip_here   ansible_user=ubuntu
 
 [monasca-agent:children]
 devstack

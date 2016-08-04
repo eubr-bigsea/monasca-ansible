@@ -15,7 +15,6 @@
 
 - name: Install Monasca
   hosts: monasca
-  user: ubuntu
   become: yes
   roles:
     - { role: "os_monasca", tags: [ "os-monasca" ] }
@@ -24,7 +23,6 @@
 
 - name: Configure standard alarm definitions
   hosts: monasca
-  user: ubuntu
   become: yes
   gather_facts: no
   roles:
@@ -34,7 +32,6 @@
 
 - name: Install monasca-ui on Horizon
   hosts: devstack
-  user: ubuntu
   become: yes
   roles:
     - { role: "os_monasca_ui", tags: [ "os-monasca-ui" ] }
