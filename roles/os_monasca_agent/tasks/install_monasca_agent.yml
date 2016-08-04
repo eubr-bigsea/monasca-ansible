@@ -70,6 +70,15 @@
     - monasca-mysql-plugin
     - monasca-install-agent
 
+- name: Copy supervisord config for monitoring it
+  copy:
+    src: "/etc/monasca/agent/supervisor.conf"
+    dest: "/root/.supervisord.cnf"
+    remote_src: True
+  tags:
+    - monasca-supervisord-plugin
+    - monasca-install-agent
+
 - name: Run monasca-reconfigure
   command: "/usr/local/bin/monasca-reconfigure"
   register: reconfigure_result
