@@ -23,6 +23,8 @@ alarms = monasca_api.v2.reference.alarms:Alarms
 alarms_count = monasca_api.v2.reference.alarms:AlarmsCount
 alarms_state_history = monasca_api.v2.reference.alarms:AlarmsStateHistory
 notification_methods = monasca_api.v2.reference.notifications:Notifications
+dimension_values = monasca_api.v2.reference.metrics:DimensionValues
+notification_method_types = monasca_api.v2.reference.notificationstype:NotificationsType
 
 [security]
 # The roles that are allowed full access to the API.
@@ -30,6 +32,9 @@ default_authorized_roles = user, domainuser, domainadmin, monasca-user
 
 # The roles that are allowed to only POST metrics to the API. This role would be used by the Monasca Agent.
 agent_authorized_roles = monasca-agent
+
+# The roles that are allowed to only GET metrics from the API.
+read_only_authorized_roles = monasca-read-only-user
 
 # The roles that are allowed to access the API on behalf of another tenant.
 # For example, a service can POST metrics to another tenant if they are a member of the "delegate" role.
@@ -51,6 +56,9 @@ alarms_driver = monasca_api.common.repositories.sqla.alarms_repository:AlarmsRep
 
 # The driver to use for the notifications repository
 notifications_driver = monasca_api.common.repositories.sqla.notifications_repository:NotificationsRepository
+
+# The driver to use for the notification method type repository
+notification_method_type_driver = monasca_api.common.repositories.sqla.notification_method_type_repository:NotificationMethodTypeRepository
 
 [dispatcher]
 driver = v2_reference

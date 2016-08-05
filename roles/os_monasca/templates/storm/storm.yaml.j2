@@ -39,7 +39,7 @@ supervisor.childopts: -Xmx256m
 worker.childopts: -Xmx1280m -XX:+UseConcMarkSweepGC -Dcom.sun.management.jmxremote
 
 ### nimbus.* configs are for the master
-nimbus.host: "{{ ansible_default_ipv4.address }}"
+nimbus.seeds: ["{{ ansible_default_ipv4.address }}"]
 nimbus.thrift.port: 6627
 nimbus.childopts: -Xmx256m
 
