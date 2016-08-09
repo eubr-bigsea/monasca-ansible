@@ -52,6 +52,10 @@ Role Variables
     os_mon_password: "password"
     os_mon_project_name: "mini-mon"
     
+    # monasca-read-only-user credentials
+    os_mon_read_only_username: "monasca-read-only-user"
+    os_mon_read_only_password: "password" 
+    
     # monasca-agent credentials
     os_mon_agent_username: "monasca-agent"
     os_mon_agent_password: "password"

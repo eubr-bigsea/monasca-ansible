@@ -30,6 +30,10 @@ Role Variables
     mysql_root_pass: "secretdatabase"
     mysql_host: "127.0.0.1"
     
+    ## Apache plugin conf
+    apache_status_user: "guest"
+    apache_status_password: "guest"
+    
     ## NTP
     agent_ntp_servers:
       - "{{ monasca_ip_address }}"
@@ -48,9 +52,8 @@ Role Variables
     
     # Common pip packages
     monasca_agent_pip_packages:
-      - simport
-      - psutil==3.0.1
       - PyMySQL
+      - python-neutronclient
       - MySQL-python
       - kafka-python==0.9.2
 

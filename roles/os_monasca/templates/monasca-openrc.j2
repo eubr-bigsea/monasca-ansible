@@ -22,5 +22,7 @@
 . /opt/venvs/monasca-client/bin/activate
 export OS_USERNAME={{ os_mon_username }}
 export OS_PASSWORD={{ os_mon_password }}
+export OS_USER_DOMAIN_NAME=Default
 export OS_PROJECT_NAME={{ os_mon_project_name }}
+export OS_PROJECT_DOMAIN_NAME=Default
 export OS_AUTH_URL=http://{{ keystone_ip_address }}:35357/v3/

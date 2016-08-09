@@ -31,7 +31,7 @@ Install and configure the following services:
 
 ```bash
 sudo apt-get update && sudo apt-get install git -y
-git clone https://git.openstack.org/openstack-dev/devstack -b stable/mitaka
+git clone https://git.openstack.org/openstack-dev/devstack
 cd devstack
 # Remember to configure the local.conf
 ./stack

@@ -49,7 +49,7 @@
       dest: "/etc/monasca/agent/conf.d/host_alive.yaml"
       owner: "root"
       group: "root"
-      mode: "0744"
+      mode: "0644"
     - src: "monasca-reconfigure.j2"
       dest: "/usr/local/bin/monasca-reconfigure"
       owner: "root"
@@ -61,32 +61,17 @@
     - monasca-agent-config
     - monasca-install-agent
 
-- name: Drop apache config
+- name: Drop required plugin(s) config(s) on /root
   template:
-    src: "apache.cnf.j2"
-    dest: "/root/.apache.cnf"
+    src: "{{ item }}.j2"
+    dest: "/root/.{{ item }}"
+  with_items:
+    - "my.cnf"
+    - "apache.cnf"
+    - "supervisord.cnf"
   when: "inventory_hostname in groups['devstack']"
   tags:
-    - monasca-apache-plugin
-    - monasca-install-agent
-
-
-- name: Drop mysql config
-  template:
-    src: "my.cnf.j2"
-    dest: "/root/.my.cnf"
-  when: "inventory_hostname in groups['devstack']"
-  tags:
-    - monasca-mysql-plugin
-    - monasca-install-agent
-
-- name: Copy supervisord config for monitoring it
-  copy:
-    src: "/etc/monasca/agent/supervisor.conf"
-    dest: "/root/.supervisord.cnf"
-    remote_src: True
-  tags:
-    - monasca-supervisord-plugin
+    - monasca-plugins
     - monasca-install-agent
 
 - name: Run monasca-reconfigure
