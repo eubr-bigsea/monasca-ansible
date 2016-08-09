@@ -163,9 +163,9 @@ def main(argv):
          'password': '{{ os_password }}',
          'role': 'monasca-user'},
         {'username': '{{ os_mon_read_only_username }}',
-          'project': '{{ os_mon_project_name }}',
-          'password': '{{ os_mon_read_only_password }}',
-          'role': 'monasca-read-only-user'}
+         'project': '{{ os_mon_project_name }}',
+         'password': '{{ os_mon_read_only_password }}',
+         'role': 'monasca-read-only-user'}
     ]
 
     url = 'http://{{ keystone_ip_address }}:35357/v3'
