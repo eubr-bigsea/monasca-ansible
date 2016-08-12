@@ -25,13 +25,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ds.vm.box = "ubuntu/trusty64"
 
     ds.vm.network "forwarded_port", guest: 80, host: 8080
+    ds.vm.network "private_network", ip: "10.2.0.10"
     ds.vm.provider "virtualbox" do |vb|
       vb.memory = 7168
       vb.cpus = 4
     end
 
+    ds.vm.provision "hosts", sync_hosts: true
     ds.vm.provision "shell", inline: $apt_proxy
-
     ds.vm.provision "devstack", type: "ansible" do |ansible|
       ansible.tags = ANSIBLE_TAGS
       ansible.playbook = "devstack.yml"
@@ -50,11 +51,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     mm.vm.hostname = 'monasca'
     mm.vm.box = "ubuntu/trusty64"
 
+    mm.vm.network "private_network", ip: "10.2.0.11"
     mm.vm.provider "virtualbox" do |vb|
       vb.memory = 6144
       vb.cpus = 4
     end
 
+    mm.vm.provision "hosts", sync_hosts: true
     mm.vm.provision "shell", inline: $apt_proxy
     mm.vm.provision "monasca", type: "ansible" do |ansible|
       ansible.tags = ANSIBLE_TAGS
