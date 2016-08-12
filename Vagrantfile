@@ -1,6 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 VAGRANTFILE_API_VERSION = "2" # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+ANSIBLE_TAGS=ENV['ANSIBLE_TAGS']
 
 $ansible_groups = {
 	"devstack"               => ["devstack"],
@@ -32,10 +33,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ds.vm.provision "shell", inline: $apt_proxy
 
     ds.vm.provision "devstack", type: "ansible" do |ansible|
+      ansible.tags = ANSIBLE_TAGS
       ansible.playbook = "devstack.yml"
     end
 
     ds.vm.provision "monasca", type: "ansible" do |ansible|
+      ansible.tags = ANSIBLE_TAGS
       ansible.raw_arguments = $ansible_raw_arguments
       ansible.groups =  $ansible_groups
       ansible.playbook = "os-monasca-install.yml"
@@ -54,6 +57,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     mm.vm.provision "shell", inline: $apt_proxy
     mm.vm.provision "monasca", type: "ansible" do |ansible|
+      ansible.tags = ANSIBLE_TAGS
       ansible.playbook = "setup-everything.yml"
       ansible.raw_arguments = $ansible_raw_arguments
       ansible.groups = $ansible_groups
