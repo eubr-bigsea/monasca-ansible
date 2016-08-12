@@ -33,6 +33,7 @@
 
     - name: Is devstack running?
       shell: screen -ls | egrep -q "\.stack"
+      become: no
       args:
         chdir: "/home/{{ansible_user}}/devstack"
       register: is_devstack_running
@@ -41,7 +42,9 @@
         - devstack
 
     - name: Install Stack devstack
-      command: "./stack.sh chdir=/home/{{ansible_user}}/devstack"
+      command: ./stack.sh
+      args:
+        chdir: "/home/{{ansible_user}}/devstack"
       tags:
         - devstack
       when: is_devstack_running.rc > 0
