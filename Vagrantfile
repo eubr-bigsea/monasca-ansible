@@ -5,8 +5,8 @@ ANSIBLE_TAGS=ENV['ANSIBLE_TAGS']
 
 $ansible_groups = {
 	"devstack"               => ["devstack"],
-	"monasca"                => ["monasca"],
-	"monasca-agent:children" => ["devstack", "monasca"],
+	"monasca"                => ["devstack"],
+	"monasca-agent:children" => ["devstack"],
 }
 
 $ansible_raw_arguments = ['-T 30', '-e pipelining=True']
@@ -25,13 +25,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ds.vm.box = "ubuntu/trusty64"
 
     ds.vm.network "forwarded_port", guest: 80, host: 8080
-    ds.vm.network "private_network", ip: "10.2.0.10"
     ds.vm.provider "virtualbox" do |vb|
-      vb.memory = 7168
+      vb.memory = 9216
       vb.cpus = 4
     end
 
-    ds.vm.provision "hosts", sync_hosts: true
     ds.vm.provision "shell", inline: $apt_proxy
     ds.vm.provision "devstack", type: "ansible" do |ansible|
       ansible.tags = ANSIBLE_TAGS
@@ -42,7 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.tags = ANSIBLE_TAGS
       ansible.raw_arguments = $ansible_raw_arguments
       ansible.groups =  $ansible_groups
-      ansible.playbook = "os-monasca-install.yml"
+      ansible.playbook = "setup-everything.yml"
     end
   end
 
