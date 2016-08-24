@@ -18,6 +18,12 @@ Install and configure the following services:
 
 2 instances (devstack, monasca).
 
+**Minimal instance configuration**
+
+- 4 VCPU
+- 12GB memory
+- 10GB storage
+
 **Ports on security group:**
 
 - 22 (SSH)
