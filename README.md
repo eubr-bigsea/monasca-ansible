@@ -20,9 +20,15 @@ Install and configure the following services:
 
 **Minimal instance configuration**
 
-- 4 VCPU
-- 12GB memory
-- 10GB storage
+1. devstack
+    * 2 VCPU
+    * 4GB memory
+    * 20GB storage
+
+2. monasca
+    * 4 VCPU
+    * 12GB memory
+    * 20GB storage
 
 **Ports on security group:**
 
