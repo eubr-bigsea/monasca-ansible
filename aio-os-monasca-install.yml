@@ -1,0 +1,21 @@
+- hosts: monasca
+  become: yes
+  vars:
+    - keystone_ip_address: "{{ groups['monasca'][0] }}"
+    - grafana_ip_address: "{{ groups['monasca'][0] }}"
+    - monasca_ip_address: "{{ groups['monasca'][0] }}"
+    - mysql_root_pass: 'mysql_password'
+    - os_password: 'openstack_password'
+    - os_mon_agent_password: "monasca_agent_password"
+    - os_mon_username: "monitor"
+    - os_mon_password: "monasca_user_password"
+    - os_mon_project_name: "monasca"
+    - horizon_dir: "/usr/share/openstack-dashboard" #Horizon installed using distribution package
+    - notification_address: admin@example.com
+    - notification_name: 'Admin Email'
+
+  roles:
+    - { role: "os_monasca", tags: [ "os-monasca" ] }
+    - { role: "os_monasca_alarms", tags: [ "os-monasca-alarms" ] }
+    - { role: "os_monasca_ui", tags: [ "os-monasca-ui" ] }
+    - { role: "os_monasca_agent", tags: [ "os-monasca-agent" ] }
