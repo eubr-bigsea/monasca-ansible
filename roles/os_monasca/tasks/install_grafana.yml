@@ -97,3 +97,26 @@
   tags:
     - monasca-grafana-restart
     - monasca-install-grafana
+
+- name: Create default data source on InfluxDB
+  uri:
+    url: "http://{{grafana_ip_address}}:3000/api/datasources"
+    user: 'admin'
+    password: 'admin'
+    force_basic_auth: yes
+    method: POST
+    HEADER_Content-Type: "application/json;charset=UTF-8"
+    body_format: json
+    body:
+      name: 'influxdb'
+      type: 'influxdb'
+      url: "http://{{grafana_ip_address}}:8086"
+      access: 'direct'
+      isDefault: true
+      database: 'mon'
+      password: 'admin'
+      user: 'admin'
+  register: grafana-datasources
+  tags:
+    - monasca-setup-datasource
+    - monasca-install-grafana
