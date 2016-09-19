@@ -126,6 +126,17 @@
     - monasca-agent-install
     - monasca-agent-pip-packages
 
+- name: Install greenlet pip packages (venv)
+  pip:
+    name: greenlet
+    virtualenv: "/opt/venvs/monasca-agent"
+    extra_args: "--no-binary greenlet"
+    state: forcereinstall
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'precise'
+  tags:
+    - monasca-agent-install
+    - monasca-agent-pip-packages
+
 - name: Clone monasca git repositories
   git:
     repo: "{{ item.repo }}"

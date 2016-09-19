@@ -25,6 +25,17 @@
     - monasca-api-pip-packages
     - monasca-install-api
 
+- name: Install greenlet pip packages (venv)
+  pip:
+    name: greenlet
+    virtualenv: "/opt/venvs/monasca-api"
+    extra_args: "--no-binary greenlet"
+    state: forcereinstall
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'precise'
+  tags:
+    - monasca-api-pip-packages
+    - monasca-install-api
+
 - name: Create monasca-api tarball
   command: "/opt/venvs/monasca-api/bin/python setup.py sdist"
   args:
