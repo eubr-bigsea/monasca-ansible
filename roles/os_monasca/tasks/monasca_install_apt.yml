@@ -15,7 +15,7 @@
 
 - name: Download nodejs apt source script
   get_url:
-    url: "https://deb.nodesource.com/setup_4.x"
+    url: "http://deb.nodesource.com/setup_4.x"
     dest: "/root/nodejs-setup_4.x"
     mode: 0750
   register: nodejs_apt
