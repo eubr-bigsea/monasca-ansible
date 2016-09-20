@@ -15,8 +15,8 @@
 
 - name: Download golang
   get_url:
-    url: "https://storage.googleapis.com/golang/go1.5.2.linux-amd64.tar.gz"
-    dest: "/root/go1.5.2.linux-amd64.tar.gz"
+    url: "https://storage.googleapis.com/golang/go{{ go_version }}.linux-amd64.tar.gz"
+    dest: "/root/go{{ go_version }}.linux-amd64.tar.gz"
     mode: 0440
   tags:
     - monasca-golang-download
@@ -24,7 +24,7 @@
 
 - name: Unarchive golang
   unarchive:
-    src: "/root/go1.5.2.linux-amd64.tar.gz"
+    src: "/root/go{{ go_version }}.linux-amd64.tar.gz"
     dest: "/usr/local"
     creates: "/usr/local/go"
     copy: "no"
