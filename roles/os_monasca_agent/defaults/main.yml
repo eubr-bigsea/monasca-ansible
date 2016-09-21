@@ -18,6 +18,7 @@ monasca_agent_git_repo: "https://git.openstack.org/openstack/monasca-agent.git"
 monasca_client_git_repo: "https://git.openstack.org/openstack/python-monascaclient.git"
 monasca_git_branch: "master"
 monasca_ip_address: "127.0.0.1"
+monasca_skip_detection_plugins: ""
 
 ## Keystone
 keystone_ip_address: "127.0.0.1"
