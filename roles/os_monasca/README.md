@@ -74,6 +74,9 @@ Role Variables
     storm_version: "1.0.1"
     storm_logback_dir: "log4j2"
     
+    ## Go
+    go_version: "1.7.1"
+    
     ## NTP
     ntp_servers:
       - ntp.lsd.ufcg.edu.br
