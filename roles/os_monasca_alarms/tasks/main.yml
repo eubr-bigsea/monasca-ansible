@@ -21,11 +21,11 @@
 - include: system.yml
   tags: system_alarms
 
-- include: monasca.yml
-  tags: monasca_alarms
-
+#- include: monasca.yml
+#  tags: monasca_alarms
+#
 - include: openstack.yml
   tags: openstack_alarms
-
-- include: misc_services.yml
-  tags: service_alarms
+#
+#- include: misc_services.yml
+#  tags: service_alarms

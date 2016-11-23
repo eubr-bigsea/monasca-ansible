@@ -26,7 +26,6 @@ monasca_apt_packages:
   - mariadb-server
   - mariadb-client
   - maven
-  - nodejs
   - openjdk-7-jdk
   - python-dev
   - python-mysqldb

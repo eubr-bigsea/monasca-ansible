@@ -4,5 +4,5 @@ init_config:
     ssh_timeout: 0.5
 instances:
 -   alive_test: ssh
-    host_name: 127.0.0.1
-    name: 127.0.0.1
+    host_name: {{ ansible_hostname }}
+    name: {{ ansible_hostname }}

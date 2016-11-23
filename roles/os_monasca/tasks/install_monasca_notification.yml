@@ -45,7 +45,6 @@
   pip:
     name: "file://{{ tarball.stdout }}"
     virtualenv: "/opt/venvs/monasca-notification"
-    extra_args: "--allow-unverified simport"
   tags:
     - monasca-notification-install
     - monasca-install-notification

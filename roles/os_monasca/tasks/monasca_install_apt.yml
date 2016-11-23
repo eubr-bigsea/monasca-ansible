@@ -13,20 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Download nodejs apt source script
+- name: Download NVM install script
   get_url:
-    url: "http://deb.nodesource.com/setup_4.x"
-    dest: "/root/nodejs-setup_4.x"
+    url: "https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh"
+    dest: "/root/nvm_install.sh"
     mode: 0750
-  register: nodejs_apt
+  register: nvm_script
   tags:
-    - monasca-nodejs
+    - monasca-nvm
 
-- name: Run nodejs script
-  command: "/root/nodejs-setup_4.x"
-  when: nodejs_apt.changed
+- name: Run NVM install script
+  command: "/root/nvm_install.sh"
+  when: nvm_script.changed
   tags:
-    - monasca-nodejs
+    - monasca-nvm
 
 - name: Check apt last update file
   stat:

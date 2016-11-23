@@ -60,7 +60,7 @@ base_kafka_version: "0.8.1.1"
 kafka_version: "2.9.2-{{ base_kafka_version }}"
 
 ## Storm
-storm_version: "1.0.1"
+storm_version: "1.0.2"
 storm_logback_dir: "log4j2"
 
 ## Go
