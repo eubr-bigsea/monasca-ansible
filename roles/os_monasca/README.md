@@ -35,33 +35,33 @@ Role Variables
     monasca_git_branch: "master"
     
     ## Grafana
-    grafana_plugins_git_repo: "https://github.com/twc-openstack/grafana-plugins.git"
-    grafana_plugins_git_branch: "v2.6.0"
+    grafana_datasource_git_repo: "https://github.com/openstack/monasca-grafana-datasource.git"
+    grafana_git_branch: "master"
     grafana_git_repo: "https://github.com/twc-openstack/grafana.git"
-    grafana_git_branch: "v2.6.0-keystone"
+    grafana_git_branch: "master-keystone"
     
     ## Keystone
     keystone_ip_address: "127.0.0.1"
     # admin credentials
     os_username: "admin"
-    os_password: "secretadmin"
+    os_password: "password"
     os_project_name: "admin"
     
     # monasca-user credentials
-    os_mon_username: "mini-mon"
+    os_mon_username: "monasca"
     os_mon_password: "password"
-    os_mon_project_name: "mini-mon"
+    os_mon_project_name: "monasca"
     
     # monasca-read-only-user credentials
     os_mon_read_only_username: "monasca-read-only-user"
-    os_mon_read_only_password: "password" 
+    os_mon_read_only_password: "password"
     
     # monasca-agent credentials
     os_mon_agent_username: "monasca-agent"
     os_mon_agent_password: "password"
     
     ## Database
-    mysql_root_pass: "secretdatabase"
+    mysql_root_pass: "password"
     
     ## InfluxDB
     influxdb_version: "0.9.5"
@@ -71,11 +71,16 @@ Role Variables
     kafka_version: "2.9.2-{{ base_kafka_version }}"
     
     ## Storm
-    storm_version: "1.0.1"
-    storm_logback_dir: "log4j2"
+    storm_version: "1.0.2"
     
     ## Go
     go_version: "1.7.1"
+
+    ## NodeJS
+    node_js_version: "4.0.0"
+
+    ## NVM
+    nvm_version: "0.32.1"
     
     ## NTP
     ntp_servers:
@@ -120,7 +125,7 @@ Example Playbook
 Tested on
 ---------
 
-Ubuntu 14.04 trusty tahr
+Ubuntu 16.04 xenial xerus
 
 Author Information
 ------------------

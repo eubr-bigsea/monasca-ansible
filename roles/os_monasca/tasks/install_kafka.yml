@@ -59,8 +59,8 @@
       owner: "root"
       group: "root"
       mode: "0775"
-    - src: "kafka/kafka.conf.j2"
-      dest: "/etc/init/kafka.conf"
+    - src: "kafka/kafka.service.j2"
+      dest: "/etc/systemd/system/kafka.service"
       owner: "root"
       group: "root"
     - src: "kafka/log4j.properties.j2"
@@ -75,6 +75,13 @@
   tags:
     - monasca-kafka-config
     - monasca-install-kafka
+
+- name: Ensure kafka launches on boot
+  service:
+    name: "kafka"
+    enabled: "yes"
+  tags:
+    - monasca-kafka-boot
 
 - name: Restart kafka
   service:

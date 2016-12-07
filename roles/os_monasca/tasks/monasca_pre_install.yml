@@ -97,6 +97,7 @@
     - { path: "/var/log/storm", mode: "0775", owner: "storm", group: "storm" }
     - { path: "/etc/grafana", mode: "0775", owner: "root", group: "root" }
     - { path: "/var/lib/grafana", mode: "0775", owner: "grafana", group: "grafana" }
+    - { path: "/var/lib/grafana/plugins", mode: "0775", owner: "grafana", group: "grafana" }
     - { path: "/var/log/grafana", mode: "0775", owner: "grafana", group: "grafana" }
   tags:
     - monasca-dirs

@@ -1,13 +1,8 @@
-# {{ ansible_managed }}
-
-#
-# (C) Copyright 2015 Hewlett Packard Enterprise Development Company LP
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#    http://www.apache.org/licenses/LICENSE-2.0
+#    http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,17 +12,18 @@
 # limitations under the License.
 #
 
-# Startup script for the monasca_notification
+# Startup script for the Monasca Thresh
 
-description "Monasca Notification daemon"
-start on runlevel [2345]
+[Unit]
+Description=Monasca Thresh Java app
+Requires=network.target
+After=network.target storm-nimbus.service storm-supervisor.service
 
-console log
-respawn
+[Service]
+User=mon-thresh
+Group=monasca
+ExecStart=/opt/storm/bin/storm jar /opt/monasca-thresh/monasca-thresh.jar monasca.thresh.ThresholdingEngine /etc/monasca/thresh-config.yml thresh-cluster
+Restart=on-failure
 
-kill timeout 240
-respawn limit 25 5
-
-setgid monasca
-setuid mon-notification
-exec /opt/venvs/monasca-notification/bin/monasca-notification
+[Install]
+WantedBy=multi-user.target

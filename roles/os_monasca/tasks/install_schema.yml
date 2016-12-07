@@ -49,6 +49,16 @@
     - monasca-mysql-dbcreate
     - monasca-install-schema
 
+- name: Create database users
+  mysql_user:
+    name: "{{ item[0] }}"
+    password: "password"
+    priv: "mon.*:ALL"
+    host: "{{ item[1] }}"
+  with_nested:
+    - ['notification', 'monapi', 'thresh']
+    - ['%', 'localhost', '{{ ansible_hostname }}']
+
 - name: Setup mysql schemas
   mysql_db:
     state: "import"

@@ -24,11 +24,13 @@ Install and configure the following services:
     * 2 VCPU
     * 4GB memory
     * 20GB storage
+    * Ubuntu 16.04
 
 2. monasca
     * 4 VCPU
     * 12GB memory
     * 20GB storage
+    * Ubuntu 16.04
 
 **Ports on security group:**
 
@@ -45,7 +47,7 @@ Install and configure the following services:
 sudo apt-get update && sudo apt-get install git -y
 git clone https://git.openstack.org/openstack-dev/devstack
 cd devstack
-# Remember to configure the local.conf
+# Configure local.conf
 ./stack
 ```
 
@@ -59,4 +61,3 @@ sudo scripts/bootstrap-ansible.sh
 # Add devstack and monasca IP address to the inventory file
 ansible-playbook setup-everything.yml
 ```
-openrc will be placed in /root at the monasca instance.

@@ -77,7 +77,7 @@ Example Playbook
 Tested on
 ---------
 
-Ubuntu 14.04 trusty tahr
+Ubuntu 16.04 xenial xerus 
 
 Author Information
 ------------------

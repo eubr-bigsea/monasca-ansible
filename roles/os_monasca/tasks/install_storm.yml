@@ -13,15 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Set facts based on storm version
-  set_fact:
-    storm_version: "0.9.6"
-    storm_logback_dir: "logback"
-  when: monasca_git_branch == "stable/mitaka"
-  tags:
-    - monasca-storm-version
-    - monasca-install-storm
-
 - name: Download storm
   get_url:
     url: "http://apache.mirrors.tds.net/storm/apache-storm-{{ storm_version }}/apache-storm-{{ storm_version }}.tar.gz"
@@ -67,18 +58,28 @@
       dest: "/opt/apache-storm-{{ storm_version }}/conf/storm.yaml"
       owner: "storm"
       group: "storm"
-    - src: "storm/storm-nimbus.conf.j2"
-      dest: "/etc/init/storm-nimbus.conf"
+    - src: "storm/storm-nimbus.service.j2"
+      dest: "/etc/systemd/system/storm-nimbus.service"
       owner: "root"
       group: "root"
-    - src: "storm/storm-supervisor.conf.j2"
-      dest: "/etc/init/storm-supervisor.conf"
+    - src: "storm/storm-supervisor.service.j2"
+      dest: "/etc/systemd/system/storm-supervisor.service"
       owner: "root"
       group: "root"
   register: storm_config
   tags:
     - monasca-storm-config
     - monasca-install-storm
+
+- name: Ensure storm launches on boot
+  service:
+    name: "{{ item }}"
+    enabled: "yes"
+  with_items:
+    - "storm-nimbus"
+    - "storm-supervisor"
+  tags:
+    - monasca-storm-boot
 
 - name: Restart storm nimbus
   service:

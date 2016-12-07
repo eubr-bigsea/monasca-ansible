@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-# Copyright 2015, Rackspace US, Inc.
+---
+# Copyright 2016 LSD/UFCG
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,14 +12,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Determines the operating system of a host and returns bash variables."""
-import platform
 
+## APT Cache options
+cache_timeout: 0
 
-template = """
-HOST_DISTRO="{0}"
-HOST_VERSION="{1}"
-HOST_CODENAME="{2}"
-""".format(*platform.linux_distribution())
-
-print(template)
+# Common apt packages
+monasca_apt_packages:
+  - build-essential
+  - chrony
+  - git
+  - libmysqlclient-dev
+  - mailutils
+  - mariadb-server
+  - mariadb-client
+  - maven
+  - openjdk-8-jdk
+  - python-dev
+  - python-mysqldb
+  - python-pip
+  - python-six
+  - python-setuptools
+  - zookeeperd

@@ -17,6 +17,13 @@
   hosts: monasca-agent
   user: ubuntu
   become: yes
+  pre_tasks:
+  pre_tasks:
+    - name: "Install python 2 when not installed"
+      raw: "test -e /usr/bin/python || (apt -y update && apt install -y python-simplejson)"
+
+    - name: "Gather facts"
+      setup:
   roles:
     - { role: "os_monasca_agent", tags: [ "os-monasca-agent" ] }
   vars:

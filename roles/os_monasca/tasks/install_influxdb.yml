@@ -57,10 +57,3 @@
   tags:
     - influxdb-restart
     - monasca-install-influxdb
-
-- name: Sleep for 60 seconds to let Influxdb elect a leader
-  pause:
-    minutes: 1
-  when: influxdb_config.changed
-  tags:
-    - monasca-install-influxdb

@@ -17,13 +17,13 @@ notification_type: EMAIL
 ## Keystone
 # admin credentials
 os_username: "admin"
-os_password: "secretadmin"
+os_password: "password"
 os_project_name: "admin"
 
 # monasca-user credentials
-os_mon_username: "mini-mon"
+os_mon_username: "monasca"
 os_mon_password: "password"
-os_mon_project_name: "mini-mon"
+os_mon_project_name: "monasca"
 
 # monasca-agent credentials
 os_mon_agent_username: "monasca-agent"
@@ -34,7 +34,7 @@ os_mon_agent_password: "password"
 horizon_dir: "/opt/stack/horizon"
 
 ## Database
-mysql_root_pass: "secretdatabase"
+mysql_root_pass: "password"
 
 ## NTP
 ntp_servers:

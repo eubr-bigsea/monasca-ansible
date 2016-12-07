@@ -18,10 +18,10 @@
 ## Vars ----------------------------------------------------------------------
 LINE='----------------------------------------------------------------------'
 MAX_RETRIES=${MAX_RETRIES:-5}
-REPORT_DATA=${REPORT_DATA:-""}
-ANSIBLE_PARAMETERS=${ANSIBLE_PARAMETERS:-""}
+ANSIBLE_PARAMETERS=${ANSIBLE_PARAMETERS:--e gather_facts=False}
 STARTTIME="${STARTTIME:-$(date +%s)}"
-PIP_INSTALL_OPTIONS=${PIP_INSTALL_OPTIONS:-'pip==8.1.2 setuptools==21.1.0 wheel==0.29.0 '}
+PIP_INSTALL_OPTIONS=${PIP_INSTALL_OPTIONS:-'pip==9.0.1 setuptools==30.0.0 wheel==0.29.0 '}
+COMMAND_LOGS=${COMMAND_LOGS:-"/openstack/log/ansible_cmd_logs"}
 
 # The default SSHD configuration has MaxSessions = 10. If a deployer changes
 #  their SSHD config, then the ANSIBLE_FORKS may be set to a higher number. We
@@ -41,6 +41,15 @@ fi
 
 
 ## Functions -----------------------------------------------------------------
+# Determine the distribution we are running on, so that we can configure it
+# appropriately.
+function determine_distro {
+    source /etc/os-release 2>/dev/null
+    export DISTRO_ID="${ID}"
+    export DISTRO_NAME="${NAME}"
+    export DISTRO_VERSION_ID="${VERSION_ID}"
+}
+
 # Used to retry a process that may fail due to random issues.
 function successerator {
   set +e
@@ -50,9 +59,9 @@ function successerator {
   false
   for ((RETRY=0; $? != 0 && RETRY < MAX_RETRIES; RETRY++)); do
     if [ ${RETRY} -gt 1 ];then
-      $@ -vvvv
+      "$@" -vvvv
     else
-      $@
+      "$@"
     fi
   done
   # If max retires were hit, fail.
@@ -60,17 +69,20 @@ function successerator {
     echo -e "\nHit maximum number of retries, giving up...\n"
     exit_fail
   fi
-  # Print the time that the method completed.
+  # Ensure the log directory exists
+  if [[ ! -d "${COMMAND_LOGS}" ]];then
+    mkdir -p "${COMMAND_LOGS}"
+  fi
+  # Log the time that the method completed.
   OP_TOTAL_SECONDS="$(( $(date +%s) - OP_START_TIME ))"
-  REPORT_OUTPUT="${OP_TOTAL_SECONDS} seconds"
-  REPORT_DATA+="- Operation: [ $@ ]\t${REPORT_OUTPUT}\tNumber of Attempts [ ${RETRY} ]\n"
-  echo -e "Run Time = ${REPORT_OUTPUT}"
+  echo -e "- Operation: [ $@ ]\t${OP_TOTAL_SECONDS} seconds\tNumber of Attempts [ ${RETRY} ]" \
+    >> ${COMMAND_LOGS}/ansible_runtime_report.txt
   set -e
 }
 
 function install_bits {
   # Use the successerator to run openstack-ansible
-  successerator openstack-ansible ${ANSIBLE_PARAMETERS} $@
+  successerator openstack-ansible "$@" ${ANSIBLE_PARAMETERS}
 }
 
 function ssh_key_create {
@@ -110,21 +122,34 @@ function exit_state {
 
 function exit_success {
   set +x
-  [[ "${OSA_GATE_JOB:-false}" = true ]] && gate_job_exit_tasks
   exit_state 0
 }
 
 function exit_fail {
   set +x
   log_instance_info
-  cat ${INFO_FILENAME}
   info_block "Error Info - $@"
-  [[ "${OSA_GATE_JOB:-false}" = true ]] && gate_job_exit_tasks
   exit_state 1
 }
 
 function gate_job_exit_tasks {
-  [[ -d "/openstack/log" ]] && chmod -R 0777 /openstack/log
+  # If this is a gate node from OpenStack-Infra Store all logs into the
+  #  execution directory after gate run.
+  if [[ -d "/etc/nodepool" ]];then
+    GATE_LOG_DIR="$(dirname "${0}")/../logs"
+    mkdir -p "${GATE_LOG_DIR}/host" "${GATE_LOG_DIR}/openstack"
+    rsync --archive --verbose --safe-links --ignore-errors /var/log/ "${GATE_LOG_DIR}/host" || true
+    rsync --archive --verbose --safe-links --ignore-errors /openstack/log/ "${GATE_LOG_DIR}/openstack" || true
+    # Rename all files gathered to have a .txt suffix so that the compressed
+    # files are viewable via a web browser in OpenStack-CI.
+    find "${GATE_LOG_DIR}/" -type f -exec mv {} {}.txt \;
+    # Compress the files gathered so that they do not take up too much space.
+    # We use 'command' to ensure that we're not executing with some sort of alias.
+    command gzip --best --recursive "${GATE_LOG_DIR}/"
+    # Ensure that the files are readable by all users, including the non-root
+    # OpenStack-CI jenkins user.
+    chmod -R 0777 "${GATE_LOG_DIR}"
+  fi
 }
 
 function print_info {
@@ -144,76 +169,59 @@ function log_instance_info {
   if [ ! -d "/openstack/log/instance-info" ];then
     mkdir -p "/openstack/log/instance-info"
   fi
-  export INFO_FILENAME="/openstack/log/instance-info/host_info_$(date +%s).log"
-  get_instance_info &> ${INFO_FILENAME}
+  get_instance_info
   set -x
 }
 
 function get_repos_info {
-  for i in /etc/apt/sources.list /etc/apt/sources.list.d/*; do
-    echo -e "\n$i"
-    cat $i
+  for i in /etc/apt/sources.list /etc/apt/sources.list.d/* /etc/yum.conf /etc/yum.repos.d/*; do
+    if [ -f "${i}" ]; then
+      echo -e "\n$i"
+      cat $i
+    fi
   done
 }
 
 # Get instance info
 function get_instance_info {
-  set +x
-  info_block 'Current User'
-  whoami
-  info_block 'Available Memory'
-  free -mt || true
-  info_block 'Available Disk Space'
-  df -h || true
-  info_block 'Mounted Devices'
-  mount || true
-  info_block 'Block Devices'
-  lsblk -i || true
-  info_block 'Block Devices Information'
-  blkid || true
-  info_block 'Block Device Partitions'
-  for i in /dev/xv* /dev/sd* /dev/vd*; do
-    if [ -b "$i" ];then
-      parted --script $i print || true
-    fi
-  done
-  info_block 'PV Information'
-  pvs || true
-  info_block 'VG Information'
-  vgs || true
-  info_block 'LV Information'
-  lvs || true
-  info_block 'CPU Information'
-  which lscpu && lscpu || true
-  info_block 'Kernel Information'
-  uname -a || true
-  info_block 'Container Information'
-  which lxc-ls && lxc-ls --fancy || true
-  info_block 'Firewall Information'
-  iptables -vnL || true
-  iptables -t nat -vnL || true
-  iptables -t mangle -vnL || true
-  info_block 'Network Devices'
-  ip a || true
-  info_block 'Network Routes'
-  ip r || true
-  info_block 'DNS Configuration'
-  cat /etc/resolv.conf
-  info_block 'Trace Path from google'
-  tracepath 8.8.8.8 -m 5 || true
-  info_block 'XEN Server Information'
-  if (which xenstore-read);then
-    xenstore-read vm-data/provider_data/provider || echo "\nxenstore Read Failed - Skipping\n"
-  else
-    echo -e "\nNo xenstore Information\n"
-  fi
-  get_repos_info &> /openstack/log/instance-info/host_repo_info_$(date +%s).log || true
-  dpkg-query --list &> /openstack/log/instance-info/host_packages_info_$(date +%s).log
+  TS="$(date +"%H-%M-%S")"
+  (cat /etc/resolv.conf && \
+    which systemd-resolve && \
+      systemd-resolve --statistics && \
+        cat /etc/systemd/resolved.conf) > \
+          "/openstack/log/instance-info/host_dns_info_${TS}.log" || true
+  tracepath "8.8.8.8" -m 5 > \
+    "/openstack/log/instance-info/host_tracepath_info_${TS}.log" || true
+  tracepath6 "2001:4860:4860::8888" -m 5 >> \
+    "/openstack/log/instance-info/host_tracepath_info_${TS}.log" || true
+  lxc-ls --fancy > \
+    "/openstack/log/instance-info/host_lxc_container_info_${TS}.log" || true
+  lxc-checkconfig > \
+    "/openstack/log/instance-info/host_lxc_config_info_${TS}.log" || true
+  (iptables -vnL && iptables -t nat -vnL && iptables -t mangle -vnL) > \
+    "/openstack/log/instance-info/host_firewall_info_${TS}.log" || true
+  ANSIBLE_HOST_KEY_CHECKING=False \
+    ansible -i "localhost," localhost -m setup > \
+      "/openstack/log/instance-info/host_system_info_${TS}.log" || true
+  get_repos_info > \
+    "/openstack/log/instance-info/host_repo_info_${TS}.log" || true
+
+  determine_distro
+  case ${DISTRO_ID} in
+      centos|rhel|fedora)
+          rpm -qa > \
+            "/openstack/log/instance-info/host_packages_info_${TS}.log" || true
+          ;;
+      ubuntu|debian)
+          dpkg-query --list > \
+            "/openstack/log/instance-info/host_packages_info_${TS}.log" || true
+          ;;
+  esac
 }
 
 function print_report {
   # Print the stored report data
-  echo -e "${REPORT_DATA}"
+  cat ${COMMAND_LOGS}/ansible_runtime_report.txt
 }
 
 function get_pip {
@@ -225,6 +233,9 @@ function get_pip {
     # If this fails retry with --isolated to bypass the repo server because the repo server will not have
     # been updated at this point to include any newer pip packages.
     pip install --upgrade ${PIP_INSTALL_OPTIONS} || pip install --upgrade --isolated ${PIP_INSTALL_OPTIONS}
+
+    # Ensure that our shell knows about the new pip
+    hash -r pip
 
   # when pip is not installed, install it
   else
@@ -262,12 +273,6 @@ function get_pip {
 trap "exit_fail ${LINENO} $? 'Received STOP Signal'" SIGHUP SIGINT SIGTERM
 trap "exit_fail ${LINENO} $?" ERR
 
-## Determine OS --------------------------------------------------------------
-# Determine the operating system of the base host
-# Adds the $HOST_DISTRO, $HOST_VERSION, and $HOST_CODENAME bash variables.
-eval "$(python $(dirname ${BASH_SOURCE})/os-detection.py)"
-echo "Detected ${HOST_DISTRO} ${HOST_VERSION} (codename: ${HOST_CODENAME})"
-
 ## Pre-flight check ----------------------------------------------------------
 # Make sure only root can run our script
 if [ "$(id -u)" != "0" ]; then
@@ -286,7 +291,11 @@ fi
 
 ## Exports -------------------------------------------------------------------
 # Export known paths
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH}"
 
 # Export the home directory just in case it's not set
 export HOME="/root"
+
+if [[ -f "/usr/local/bin/openstack-ansible.rc" ]];then
+  source "/usr/local/bin/openstack-ansible.rc"
+fi

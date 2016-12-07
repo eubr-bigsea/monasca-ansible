@@ -32,6 +32,6 @@
 - name: Drop monasca openrc
   template:
     src: "monasca-openrc.j2"
-    dest: "/root/monasca-openrc"
+    dest: "/etc/profile.d/monasca_cli.sh"
   tags:
     - monasca-openrc

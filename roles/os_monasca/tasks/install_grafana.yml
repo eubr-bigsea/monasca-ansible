@@ -35,23 +35,23 @@
 - name: Clone grafana git repositories
   git:
     repo: "{{ item.repo }}"
-    dest: "/opt/cloned-repos/{{ item.dest }}"
+    dest: "{{ item.dest }}"
     version: "{{ item.version }}"
     force: "yes"
   with_items:
-    - repo: "{{ grafana_plugins_git_repo }}"
-      dest: "grafana-plugins"
-      version: "v2.6.0"
+    - repo: "{{ grafana_datasource_git_repo }}"
+      dest: "/var/lib/grafana/plugins"
+      version: "{{ grafana_datasource_git_branch }}"
     - repo: "{{ grafana_git_repo }}"
-      dest: "grafana"
-      version: "v2.6.0-keystone"
+      dest: "/opt/cloned-repos/grafana"
+      version: "{{ grafana_git_branch }}"
   tags:
     - monasca-grafana-clone-repos
     - monasca-install-grafana
 
 - name: Copy grafana install script
-  copy:
-    src: "install_grafana.sh"
+  template:
+    src: "grafana/install_grafana.sh.j2"
     dest: "/opt/grafana-build/install_grafana.sh"
     mode: "0750"
   register: grafana_script
@@ -75,11 +75,11 @@
     group: "{{ item.group }}"
     mode: "{{ item.mode|default('0644') }}"
   with_items:
-    - src: "grafana/grafana-server.j2"
-      dest: "/etc/init.d/grafana-server"
+    - src: "grafana/grafana-server.service.j2"
+      dest: "/etc/systemd/system/grafana-server.service"
       owner: "root"
       group: "root"
-      mode: "0775"
+      mode: "0644"
     - src: "grafana/grafana.ini.j2"
       dest: "/etc/grafana/grafana.ini"
       owner: "root"
@@ -88,6 +88,13 @@
   tags:
     - monasca-grafana-config
     - monasca-install-grafana
+
+- name: Ensure grafana launches on boot
+  service:
+    name: "grafana-server"
+    enabled: "yes"
+  tags:
+    - monasca-grafana-boot
 
 - name: Restart grafana
   service:

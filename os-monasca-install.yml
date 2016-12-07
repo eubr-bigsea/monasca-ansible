@@ -17,17 +17,15 @@
   hosts: monasca
   user: ubuntu
   become: yes
+  gather_facts: no
+  pre_tasks:
+    - name: "Install python 2 when not installed"
+      raw: "test -e /usr/bin/python || (apt -y update && apt install -y python-simplejson)"
+
+    - name: "Gather facts"
+      setup:
   roles:
     - { role: "os_monasca", tags: [ "os-monasca" ] }
-  vars:
-    - keystone_ip_address: "{{ groups['devstack'][0] }}"
-
-- name: Configure standard alarm definitions
-  hosts: monasca
-  user: ubuntu
-  become: yes
-  gather_facts: no
-  roles:
     - { role: "os_monasca_alarms", tags: [ "os-monasca-alarms" ] }
   vars:
     - keystone_ip_address: "{{ groups['devstack'][0] }}"
