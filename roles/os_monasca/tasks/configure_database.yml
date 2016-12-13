@@ -15,10 +15,12 @@
 
 - name: Update MySQL root password for all root accounts
   mysql_user:
+    login_user: "root"
+    login_password: "{{ mysql_root_pass }}"
     name: "root"
     host: "{{ item }}"
     password: "{{ mysql_root_pass }}"
-    state: present
+    check_implicit_admin: yes
   with_items:
     - "{{ ansible_hostname }}"
     - 127.0.0.1
