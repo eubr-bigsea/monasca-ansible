@@ -19,6 +19,8 @@
     virtualenv: "/opt/venvs/monasca-persister"
   with_items:
     - "influxdb==2.8.0"
+    - "six>=1.10.0"
+    - "file://{{ monasca_common_tarball.stdout }}"
   tags:
     - monasca-persister-pip-packages
     - monasca-install-persister
