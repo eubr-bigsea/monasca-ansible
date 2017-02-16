@@ -23,8 +23,6 @@
       mode: "0750"
     - schema: "mon_mysql.sql"
       mode: "0644"
-    - schema: "winchester.sql"
-      mode: "0644"
   register: schemas
   tags:
     - monasca-schema-download
@@ -37,13 +35,12 @@
     - monasca-influxdb-schema
     - monasca-install-schema
 
-- name: Create mon & winchester databases
+- name: Create mon database
   mysql_db:
     name: "{{ item }}"
     state: "present"
   with_items:
     - "mon"
-    - "winchester"
   when: schemas.changed
   tags:
     - monasca-mysql-dbcreate
@@ -67,8 +64,6 @@
   with_items:
     - name: "mon"
       sql: "mon_mysql.sql"
-    - name: "winchester"
-      sql: "winchester.sql"
   when: schemas.changed
   tags:
     - monasca-mysql-schema
