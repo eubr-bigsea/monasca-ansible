@@ -1,0 +1,26 @@
+- name: Setup DevStack
+  hosts: devstack
+  user: ubuntu
+  gather_facts: no
+  pre_tasks:
+    - name: "Install python 2 when not installed"
+      raw: "test -e /usr/bin/python || (apt -y update && apt install -y python-simplejson)"
+      become: yes
+      changed_when: false
+    - name: "Gather facts"
+      setup:
+  tasks:
+    - name: Clone DevStack repository
+      git:
+        repo: "https://git.openstack.org/openstack-dev/devstack"
+        dest: "{{ ansible_env.HOME }}/devstack"
+        version: "{{ monasca_git_branch }}"
+        force: "yes"
+
+    - name: Drop local.conf
+      copy:
+        src: "local.conf"
+        dest: "{{ ansible_env.HOME }}/devstack/local.conf"
+
+    - name: Run stack.sh
+      command: "{{ ansible_env.HOME }}/devstack/stack.sh"
