@@ -88,3 +88,5 @@
   tags:
     - monasca-kafka-topics
     - monasca-install-schema
+
+- meta: flush_handlers
