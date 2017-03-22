@@ -54,7 +54,7 @@ os_mon_agent_password: "password"
 mysql_root_pass: "password"
 
 ## InfluxDB
-influxdb_version: "0.9.5"
+influxdb_version: "1.1.0"
 
 ## Kafka
 base_kafka_version: "0.8.1.1"

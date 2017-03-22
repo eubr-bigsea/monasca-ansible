@@ -109,7 +109,7 @@ sporadicMetricNamespaces:
   - foo
 
 database:
-  driverClass: com.mysql.jdbc.Driver
+  driverClass: "com.mysql.jdbc.jdbc2.optional.MysqlDataSource"
   url: "jdbc:mysql://{{ ansible_default_ipv4.address }}/mon?useSSL=true"
   user: "thresh"
   password: "password"
@@ -119,12 +119,28 @@ database:
   maxWaitForConnection: 1s
 
   # the SQL query to run when validating a connection's liveness
-  validationQuery: "/* MyService Health Check */ SELECT 1"
+  validationQuery: "/* mysql Health Check */ SELECT 1"
 
   # the minimum number of connections to keep open
   minSize: 8
 
   # the maximum number of connections to keep open
-
-
   maxSize: 41
+
+  # flag indicates if Hibernate support enabled
+  hibernateSupport: false
+
+  # hibernate provider class
+  providerClass: com.zaxxer.hikari.hibernate.HikariConnectionProvider
+
+  # database name
+  databaseName: mon
+
+  # server name/address
+  serverName: {{ ansible_default_ipv4.address }}
+
+  # server port number
+  portNumber: 3306
+
+  # hibernate auto configuretion parameter
+  autoConfig: validate
