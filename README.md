@@ -14,23 +14,14 @@ Install and configure the following services:
 * monasca-agent
 * monitoring dashboard for monasca
 
-## Deploying DevStack + Monasca:
-
-2 instances (devstack, monasca).
+## Deploying DevStack (Kyestone/Horizon) + Monasca:
 
 **Minimal instance configuration**
 
-1. devstack
-    * 2 VCPU
-    * 4GB memory
-    * 20GB storage
-    * Ubuntu 16.04
-
-2. monasca
-    * 4 VCPU
-    * 12GB memory
-    * 20GB storage
-    * Ubuntu 16.04
+* 4 VCPU
+* 8 GB memory
+* 60GB storage
+* Ubuntu 16.04
 
 **Ports on security group:**
 
@@ -41,23 +32,19 @@ Install and configure the following services:
 - 8070 (monasca-api)
 - 35357 (keystone-admin)
 
-**On devstack:**
+**On deployment machine:**
 
 ```bash
-sudo apt-get update && sudo apt-get install git -y
-git clone https://git.openstack.org/openstack-dev/devstack
-cd devstack
-# Configure local.conf
-./stack
-```
-
-**On your machine:**
-
-```bash
-sudo apt-get update && sudo apt-get install git -y
 git clone https://git.lsd.ufcg.edu.br/monag/monasca-ansible.git
 cd monasca-ansible
-sudo scripts/bootstrap-ansible.sh
+sudo scripts/bootstrap-ansible.sh # Install ansible
 # Add devstack and monasca IP address to the inventory file
+ansible-playbook setup-devstack.yml
 ansible-playbook setup-everything.yml
 ```
+
+## Customizing
+
+Check ``group_vars/all.yml`` for variables that
+can be overriden, such as the monasca branch and
+user credentials.
