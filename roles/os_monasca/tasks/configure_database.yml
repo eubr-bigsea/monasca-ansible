@@ -22,6 +22,7 @@
     password: "{{ mysql_root_pass }}"
     check_implicit_admin: yes
   with_items:
+    - "{{ mysql_host }}"
     - "{{ ansible_hostname }}"
     - 127.0.0.1
     - ::1
@@ -31,20 +32,24 @@
 
 - name: Drop MariaDB Config(s)
   template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
+    src: "mysql/my.cnf.j2"
+    dest: "/etc/mysql/my.cnf"
+    owner: "root"
+    group: "root"
     mode: "0644"
-  with_items:
-    - src: "mysql/my.cnf.j2"
-      dest: "/etc/mysql/my.cnf"
-      owner: "root"
-      group: "root"
-    - src: "mysql/root.cnf.j2"
-      dest: "/root/.my.cnf"
-      owner: "root"
-      group: "root"
+  register: mariadb_config
+  when: configure_mysql
+  tags:
+    - mariadb-config
+    - monasca-install-mariadb
+
+- name: Drop MariaDB Credentials
+  template:
+    src: "mysql/root.cnf.j2"
+    dest: "/root/.my.cnf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
   register: mariadb_config
   tags:
     - mariadb-config

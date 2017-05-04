@@ -108,7 +108,7 @@ password = password
 database_name = mon
 
 [database]
-url = "mysql+pymysql://monapi:password@{{ ansible_default_ipv4.address }}/mon"
+url = "mysql+pymysql://monapi:password@{{ mysql_host }}/mon"
 
 # [mysql]
 # database_name = mon

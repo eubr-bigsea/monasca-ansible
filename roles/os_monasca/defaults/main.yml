@@ -51,7 +51,11 @@ os_mon_agent_username: "monasca-agent"
 os_mon_agent_password: "password"
 
 ## Database
+configure_mysql: true
 mysql_root_pass: "password"
+mysql_server_package: "mariadb-server"
+mysql_client_package: "mariadb-client"
+mysql_host: "{{ ansible_default_ipv4.address }}"
 
 ## InfluxDB
 influxdb_version: "1.1.0"

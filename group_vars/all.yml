@@ -36,6 +36,9 @@ horizon_dir: "/opt/stack/horizon"
 
 ## Database
 mysql_root_pass: "password"
+mysql_server_package: "mariadb-server"
+mysql_client_package: "mariadb-client"
+configure_mysql: true
 
 ## NTP
 ntp_servers:

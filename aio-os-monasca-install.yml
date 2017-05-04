@@ -13,9 +13,13 @@
     - horizon_dir: "/usr/share/openstack-dashboard" #Horizon installed using distribution package
     - notification_address: admin@example.com
     - notification_name: 'Admin Email'
-
+    - configure_mysql: false
+    - mysql_server_package: "mysql-server"
+    - mysql_client_package: "mysql-client"
+    - mysql_host: '127.0.0.1'
   roles:
     - { role: "os_monasca", tags: [ "os-monasca" ] }
     - { role: "os_monasca_alarms", tags: [ "os-monasca-alarms" ] }
     - { role: "os_monasca_ui", tags: [ "os-monasca-ui" ] }
     - { role: "os_monasca_agent", tags: [ "os-monasca-agent" ] }
+

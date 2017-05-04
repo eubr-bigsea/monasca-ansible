@@ -34,7 +34,7 @@ database:
   repo_driver: "monasca_notification.common.repositories.mysql.mysql_repo:MysqlRepo"
 
 mysql:
-    host: "{{ ansible_default_ipv4.address }}"
+    host: "{{ mysql_host }}"
     user: "notification"
     passwd: "password"
     db: "mon"

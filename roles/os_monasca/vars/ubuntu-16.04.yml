@@ -23,8 +23,6 @@ monasca_apt_packages:
   - git
   - libmysqlclient-dev
   - mailutils
-  - mariadb-server
-  - mariadb-client
   - maven
   - openjdk-8-jdk
   - python-dev
@@ -33,3 +31,5 @@ monasca_apt_packages:
   - python-six
   - python-setuptools
   - zookeeperd
+  - "{{ mysql_server_package }}"
+  - "{{ mysql_client_package }}"

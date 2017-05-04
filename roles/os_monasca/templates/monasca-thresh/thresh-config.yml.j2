@@ -110,7 +110,7 @@ sporadicMetricNamespaces:
 
 database:
   driverClass: "com.mysql.jdbc.jdbc2.optional.MysqlDataSource"
-  url: "jdbc:mysql://{{ ansible_default_ipv4.address }}/mon?useSSL=true"
+  url: "jdbc:mysql://{{ mysql_host }}/mon?useSSL=true"
   user: "thresh"
   password: "password"
   properties:
